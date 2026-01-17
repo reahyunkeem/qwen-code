@@ -1,0 +1,26 @@
+[
+  {
+    "source": "vector",
+    "logicalName": "회원기본정보",
+    "physicalName": "TB_MBR_BASE",
+    "type": "TABLE",
+    "description": "회원의 가장 기본적인 인적 사항을 담고 있는 마스터 테이블",
+    "location": "ORACLE_PROD"
+  },
+  {
+    "source": "vector",
+    "logicalName": "회원등급",
+    "physicalName": "TB_MBR_GRADE",
+    "type": "TABLE",
+    "description": "구매 실적에 따른 회원 등급 정보",
+    "location": "POSTGRES_CORE"
+  },
+  {
+    "source": "vector",
+    "logicalName": "포인트적립로그",
+    "physicalName": "LOG_POINT_ACC",
+    "type": "INDEX",
+    "description": "Elasticsearch에 저장되는 포인트 적립 관련 기술 로그",
+    "location": "ES_LOG_CLUSTER"
+  }
+]
