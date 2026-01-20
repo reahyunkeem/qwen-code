@@ -109,5 +109,122 @@ sequenceDiagram
 
 ---
 
-_작성일: 2026-01-17_
+## 7. 최근 구현 사항: Meta-Gateway MCP (`meta-gateway-mcp`)
+
+Oracle, PostgreSQL, Elasticsearch, 그리고 정적 벡터 DB를 통합 검색하는 MCP 서버 구축과 모든 검증 및 Git 배포를 완료했습니다.
+
+### 7.1 주요 성과
+
+- **4-Pillar 통합 MCP 서버 구축**: 사내 메타데이터 검색에 최적화된 MCP 서버 (`meta-gateway-mcp`) 구현.
+- **다양한 소스 연동 및 검증**:
+  - **Oracle**: `gvenzl/oracle-free` Docker 컨테이너를 통한 연동 및 테이블 검색 성공.
+  - **PostgreSQL**: `postgres:latest` Docker 컨테이너를 통한 연동 및 스키마 상세 검색 성공.
+  - **Elasticsearch**: 내부 API 검색, 직접 쿼리 검색, 서치 템플릿(Search Template) 연동 기능 구현.
+- **Git 협업 및 배포**: [reahyunkeem/qwen-code](https://github.com/reahyunkeem/qwen-code)의 `main` 브랜치에 배포 완료.
+
+### 7.2 주요 구성
+
+- `src/index.ts`: MCP 서버 코어 (도구 정의 및 어댑터 오케스트레이션).
+- `src/adapters/`: 각 데이터베이스 및 API 커넥터 모음.
+
+### 7.3 향후 확장 계획
+
+- **Pillar 4 (Static Vector) 고도화**: 대규모 데이터 대응을 위해 SQLite FTS5 또는 Vector Engine 도입 예정.
+- **Qwen Code 연동**: `settings.json` 등록을 통해 지능형 코드 검색 활성화 가능.
+
+### 7.4 서버 구조 및 작동 원리 (Orchestration)
+
+`meta-gateway-mcp`는 메인 서버가 각각의 데이터베이스 어댑터를 호출하는 **어댑터 패턴(Adapter Pattern)**으로 설계되었습니다.
+
+```mermaid
+graph TD
+    A[Qwen Code / IDE] -- MCP Tool Call: search_meta --> B(src/index.ts)
+    B -- Config Load --> C[.env]
+    B -- Parallel Call: search --> D[OracleAdapter]
+    B -- Parallel Call: search --> E[PostgresAdapter]
+    B -- Parallel Call: search --> F[ElasticsearchAdapter]
+    B -- Parallel Call: search --> G[StaticVectorAdapter]
+    D & E & F & G -- Return Results --> B
+    B -- Formatted Output --> A
+```
+
+- **`index.ts` (컨트롤러)**: MCP 서버의 진입점으로, 모든 어댑터의 생명주기를 관리하고 도구 호출을 각 어댑터에 전달(Dispatch)합니다.
+- **`src/adapters/` (어댑터 레이어)**: 각 DB/API에 특화된 검색 로직을 격리하여 구현한 클래스들입니다.
+
+### 7.5 `search_meta` 도구 상세 분석
+
+`search_meta`는 4개의 핵심 데이터 소스(Pillars)에서 메타데이터를 통합 검색하는 핵심 도구입니다.
+
+#### 1. 주요 파라미터
+
+- `query` (String, 필수): 검색할 용어 (용어명, 물리명, 설명 등).
+- `source` (Enum, 선택): 검색 대상을 특정 (기본값: `all`).
+  - `oracle`, `postgres`, `elasticsearch`, `vector` 중 선택 가능.
+
+#### 2. 소스별 검색 로직
+
+| 소스              | 검색 대상 및 방식                                                                                             | 주요 특징                                              |
+| :---------------- | :------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------- |
+| **Oracle**        | `USER_TABLES`의 `TABLE_NAME` 검색                                                                             | `LIKE` 연산 및 대문자 변환(`toUpperCase`) 처리.        |
+| **PostgreSQL**    | `information_schema.tables` 검색                                                                              | `ILIKE` 연산자를 사용한 대소문자 구분 없는 검색.       |
+| **Elasticsearch** | **3가지 모드 병행**:<br>1. 인덱스명 (`_cat/indices`) <br>2. 문서 본문 (`multi_match`) <br>3. 전용 검색 템플릿 | `name`, `title`, `description` 등 멀티 필드 검색 지원. |
+| **Static Vector** | `meta_data.json` 로컬 파일 검색                                                                               | 키워드 매칭 기반의 1차 필터링 수행.                    |
+
+#### 3. 결과 포맷
+
+검색 결과는 아래와 같은 포맷으로 구조화되어 에이전트에게 전달됩니다:
+
+```text
+Found [N] metadata matches for "[Query]":
+
+[SOURCE] TYPE: Logical Name (Physical Name)
+   Description: ...
+   Location: ...
+---
+```
+
+### 7.6 도구 선택 및 실행 원리 (Reasoning)
+
+Qwen LLM이 `search_meta` 도구를 사용할지 결정하는 과정은 **도구 설명(Description) 기반의 추론**에 의합니다.
+
+1.  **도구 명세 전달**: MCP 서버가 시작되면 Qwen Code 에이전트에게 `search_meta` 도구의 이름, 설명, 파라미터 스키마를 전달합니다.
+    - _이름_: `search_meta`
+    - _설명_: "Search corporate metadata across Oracle, PostgreSQL, Elasticsearch, and Static Vector DB."
+2.  **의도 분석**: 사용자가 "고객 등급 테이블 정보 찾아줘"라고 입력하면, LLM은 이 요청이 로컬 파일 읽기나 셸 실행보다 `search_meta` 도구의 설명과 가장 잘 일치한다고 판단합니다.
+3.  **파라미터 추출**: LLM은 대화 맥락에서 검색어("고객 등급")를 추출하여 도구의 `query` 파라미터로 할당합니다.
+4.  **도구 호출 (Tool Call)**: LLM은 직접 도구를 실행하는 대신, 에이전트에게 "다음 파라미터로 `search_meta`를 실행해줘"라는 특수한 응답을 보냅니다.
+5.  **피드백 루프**: 에이전트가 MCP 서버를 통해 얻은 검색 결과(Oracle, ES 등의 데이터)를 다시 LLM에게 전달하면, LLM은 이 데이터를 해석하여 사용자에게 최종 답변을 제공합니다.
+
+### 7.7 Qwen Code 연동 설정 (`settings.json`)
+
+에이전트에서 `search_meta` 도구를 사용하기 위해 `~/.qwen/settings.json` 또는 `.qwen/settings.json` 파일에 아래 설정을 추가합니다.
+
+```json
+{
+  "mcpServers": {
+    "meta-gateway": {
+      "command": "node",
+      "args": ["c:/workspace/qwen-code/meta-gateway-mcp/dist/index.js"],
+      "env": {
+        "ORACLE_USER": "system",
+        "ORACLE_PASSWORD": "password123",
+        "ORACLE_CONNECTION_STRING": "localhost:1521/FREEPDB1",
+        "PG_CONNECTION_STRING": "postgresql://postgres:password123@localhost:5432/meta_db",
+        "ES_NODE": "http://localhost:9200",
+        "VECTOR_DB_PATH": "c:/workspace/qwen-code/meta-gateway-mcp/meta_data.json"
+      }
+    }
+  }
+}
+```
+
+> [!TIP]
+> **MCP 서버 작동 및 관리 팁**
+>
+> - **자동 실행**: Qwen Code 실행 시 `settings.json` 설정을 읽어 MCP 서버를 자식 프로세스로 자동 구동하므로, 별도로 서버를 띄워둘 필요가 없습니다.
+> - **빌드 필수**: MCP 서버 소스 코드를 수정한 후에는 반드시 `npm run build`를 실행하여 `dist/index.js`를 갱신해야 에이전트에 변경 사항이 반영됩니다.
+
+---
+
+_최종 업데이트: 2026-01-20_
 _작성자: Antigravity AI Agent_
