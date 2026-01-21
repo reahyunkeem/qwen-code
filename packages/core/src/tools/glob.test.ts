@@ -414,9 +414,9 @@ describe('GlobTool', () => {
   });
 
   describe('file count truncation', () => {
-    it('should truncate results when more than 100 files are found', async () => {
-      // Create 150 test files
-      for (let i = 1; i <= 150; i++) {
+    it('should truncate results when more than 500 files are found', async () => {
+      // Create 550 test files
+      for (let i = 1; i <= 550; i++) {
         await fs.writeFile(
           path.join(tempRootDir, `file${i}.trunctest`),
           `content${i}`,
@@ -428,8 +428,8 @@ describe('GlobTool', () => {
       const result = await invocation.execute(abortSignal);
       const llmContent = partListUnionToString(result.llmContent);
 
-      // Should report all 150 files found
-      expect(llmContent).toContain('Found 150 file(s)');
+      // Should report all 550 files found
+      expect(llmContent).toContain('Found 550 file(s)');
 
       // Should include truncation notice
       expect(llmContent).toContain('[50 files truncated] ...');
@@ -437,17 +437,17 @@ describe('GlobTool', () => {
       // Count the number of .trunctest files mentioned in the output
       const fileMatches = llmContent.match(/file\d+\.trunctest/g);
       expect(fileMatches).toBeDefined();
-      expect(fileMatches?.length).toBe(100);
+      expect(fileMatches?.length).toBe(500);
 
       // returnDisplay should indicate truncation
       expect(result.returnDisplay).toBe(
-        'Found 150 matching file(s) (truncated)',
+        'Found 550 matching file(s) (truncated)',
       );
     });
 
-    it('should not truncate when exactly 100 files are found', async () => {
-      // Create exactly 100 test files
-      for (let i = 1; i <= 100; i++) {
+    it('should not truncate when exactly 500 files are found', async () => {
+      // Create exactly 500 test files
+      for (let i = 1; i <= 500; i++) {
         await fs.writeFile(
           path.join(tempRootDir, `exact${i}.trunctest`),
           `content${i}`,
@@ -458,21 +458,21 @@ describe('GlobTool', () => {
       const invocation = globTool.build(params);
       const result = await invocation.execute(abortSignal);
 
-      // Should report all 100 files found
-      expect(result.llmContent).toContain('Found 100 file(s)');
+      // Should report all 500 files found
+      expect(result.llmContent).toContain('Found 500 file(s)');
 
       // Should NOT include truncation notice
       expect(result.llmContent).not.toContain('truncated');
 
-      // Should show all 100 files
+      // Should show all 500 files
       expect(result.llmContent).toContain('exact1.trunctest');
-      expect(result.llmContent).toContain('exact100.trunctest');
+      expect(result.llmContent).toContain('exact500.trunctest');
 
       // returnDisplay should NOT indicate truncation
-      expect(result.returnDisplay).toBe('Found 100 matching file(s)');
+      expect(result.returnDisplay).toBe('Found 500 matching file(s)');
     });
 
-    it('should not truncate when fewer than 100 files are found', async () => {
+    it('should not truncate when fewer than 500 files are found', async () => {
       // Create 50 test files
       for (let i = 1; i <= 50; i++) {
         await fs.writeFile(
@@ -496,8 +496,8 @@ describe('GlobTool', () => {
     });
 
     it('should use correct singular/plural in truncation message for 1 file truncated', async () => {
-      // Create 101 test files (will truncate 1 file)
-      for (let i = 1; i <= 101; i++) {
+      // Create 501 test files (will truncate 1 file)
+      for (let i = 1; i <= 501; i++) {
         await fs.writeFile(
           path.join(tempRootDir, `singular${i}.trunctest`),
           `content${i}`,
@@ -514,8 +514,8 @@ describe('GlobTool', () => {
     });
 
     it('should use correct plural in truncation message for multiple files truncated', async () => {
-      // Create 105 test files (will truncate 5 files)
-      for (let i = 1; i <= 105; i++) {
+      // Create 505 test files (will truncate 5 files)
+      for (let i = 1; i <= 505; i++) {
         await fs.writeFile(
           path.join(tempRootDir, `plural${i}.trunctest`),
           `content${i}`,
