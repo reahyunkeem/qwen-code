@@ -1,5 +1,7 @@
 import oracledb from 'oracledb';
-import { MetaAdapter, MetaResult } from './base.js';
+import console from 'node:console';
+import { getErrorMessage } from './base.js';
+import type { MetaAdapter, MetaResult } from './base.js';
 
 export class OracleAdapter implements MetaAdapter {
   readonly name = 'oracle';
@@ -44,27 +46,29 @@ export class OracleAdapter implements MetaAdapter {
         description: row[4],
       }));
     } catch (error) {
-      console.error('Oracle search error:', error);
-      return [];
+      const message = getErrorMessage(error);
+      console.error('Oracle search error:', message);
+      throw new Error(`Oracle search failed: ${message}`);
     } finally {
       if (connection) {
         try {
           await connection.close();
         } catch (err) {
-          console.error('Oracle close error:', err);
+          console.error('Oracle close error:', getErrorMessage(err));
         }
       }
     }
   }
 
-  async testConnection(): Promise<boolean> {
+  async testConnection(): Promise<{ ok: boolean; error?: string }> {
     let connection;
     try {
       connection = await oracledb.getConnection(this.config);
-      return true;
+      return { ok: true };
     } catch (error) {
-      console.error('Oracle connection test failed:', error);
-      return false;
+      const message = getErrorMessage(error);
+      console.error('Oracle connection test failed:', message);
+      return { ok: false, error: message };
     } finally {
       if (connection) await connection.close();
     }

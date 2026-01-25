@@ -1,5 +1,7 @@
-import { MetaAdapter, MetaResult } from './base.js';
+import { getErrorMessage } from './base.js';
+import type { MetaAdapter, MetaResult } from './base.js';
 import fs from 'node:fs/promises';
+import console from 'node:console';
 
 export class StaticVectorAdapter implements MetaAdapter {
   readonly name = 'vector';
@@ -26,17 +28,18 @@ export class StaticVectorAdapter implements MetaAdapter {
         )
         .map((item) => ({ ...item, source: 'vector', score: 1.0 }));
     } catch (error) {
-      console.error('Vector search error (check if file exists):', error);
-      return [];
+      const message = getErrorMessage(error);
+      console.error('Vector search error (check if file exists):', message);
+      throw new Error(`Vector search failed: ${message}`);
     }
   }
 
-  async testConnection(): Promise<boolean> {
+  async testConnection(): Promise<{ ok: boolean; error?: string }> {
     try {
       await fs.access(this.dbPath);
-      return true;
-    } catch {
-      return false;
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getErrorMessage(error) };
     }
   }
 }

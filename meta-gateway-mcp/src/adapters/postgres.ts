@@ -1,5 +1,7 @@
 import pg from 'pg';
-import { MetaAdapter, MetaResult } from './base.js';
+import console from 'node:console';
+import { getErrorMessage } from './base.js';
+import type { MetaAdapter, MetaResult } from './base.js';
 
 export class PostgresAdapter implements MetaAdapter {
   readonly name = 'postgres';
@@ -37,22 +39,24 @@ export class PostgresAdapter implements MetaAdapter {
         location: row.location,
       }));
     } catch (error) {
-      console.error('Postgres search error:', error);
-      return [];
+      const message = getErrorMessage(error);
+      console.error('Postgres search error:', message);
+      throw new Error(`Postgres search failed: ${message}`);
     } finally {
       client.release();
     }
   }
 
-  async testConnection(): Promise<boolean> {
+  async testConnection(): Promise<{ ok: boolean; error?: string }> {
     try {
       const client = await this.pool.connect();
       await client.query('SELECT 1');
       client.release();
-      return true;
+      return { ok: true };
     } catch (error) {
-      console.error('Postgres connection test failed:', error);
-      return false;
+      const message = getErrorMessage(error);
+      console.error('Postgres connection test failed:', message);
+      return { ok: false, error: message };
     }
   }
 }

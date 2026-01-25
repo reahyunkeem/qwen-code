@@ -1,5 +1,6 @@
-import type { MetaResult } from './base.js';
-import { MetaAdapter } from './base.js';
+import { getErrorMessage } from './base.js';
+import type { MetaAdapter, MetaResult } from './base.js';
+import console from 'node:console';
 
 export class ElasticsearchAdapter implements MetaAdapter {
   readonly name = 'elasticsearch';
@@ -60,8 +61,9 @@ export class ElasticsearchAdapter implements MetaAdapter {
       });
 
       if (!response.ok) {
-        console.error(`ES Template error: ${response.statusText}`);
-        return [];
+        const message = `ES template error: ${response.status} ${response.statusText}`;
+        console.error(message);
+        throw new Error(message);
       }
 
       const searchRes = (await response.json()) as any;
@@ -77,8 +79,9 @@ export class ElasticsearchAdapter implements MetaAdapter {
         location: hit._index,
       }));
     } catch (error) {
-      console.error('ES Search Template error:', error);
-      return [];
+      const message = getErrorMessage(error);
+      console.error('ES search template error:', message);
+      throw new Error(`Elasticsearch template search failed: ${message}`);
     }
   }
 
@@ -90,7 +93,11 @@ export class ElasticsearchAdapter implements MetaAdapter {
       const url = `${this.node}/_cat/indices?format=json&index=*${query}*`;
       const response = await fetch(url, { headers: this.getHeaders() });
 
-      if (!response.ok) return [];
+      if (!response.ok) {
+        const message = `ES meta API error: ${response.status} ${response.statusText}`;
+        console.error(message);
+        throw new Error(message);
+      }
 
       const indices = (await response.json()) as any[];
       return indices.map((idx) => ({
@@ -101,8 +108,9 @@ export class ElasticsearchAdapter implements MetaAdapter {
         location: `Health: ${idx.health}, UUID: ${idx.uuid}`,
       }));
     } catch (error) {
-      console.error('ES Meta API search error:', error);
-      return [];
+      const message = getErrorMessage(error);
+      console.error('ES meta API search error:', message);
+      throw new Error(`Elasticsearch meta API search failed: ${message}`);
     }
   }
 
@@ -127,7 +135,11 @@ export class ElasticsearchAdapter implements MetaAdapter {
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) return [];
+      if (!response.ok) {
+        const message = `ES search query error: ${response.status} ${response.statusText}`;
+        console.error(message);
+        throw new Error(message);
+      }
 
       const searchRes = (await response.json()) as any;
       const hits = searchRes.hits?.hits || [];
@@ -142,8 +154,9 @@ export class ElasticsearchAdapter implements MetaAdapter {
         location: hit._index,
       }));
     } catch (error) {
-      console.error('ES Search Query error:', error);
-      return [];
+      const message = getErrorMessage(error);
+      console.error('ES search query error:', message);
+      throw new Error(`Elasticsearch query search failed: ${message}`);
     }
   }
 
@@ -157,15 +170,22 @@ export class ElasticsearchAdapter implements MetaAdapter {
     return headers;
   }
 
-  async testConnection(): Promise<boolean> {
+  async testConnection(): Promise<{ ok: boolean; error?: string }> {
     try {
       const response = await fetch(`${this.node}/`, {
         headers: this.getHeaders(),
       });
-      return response.ok;
+      if (!response.ok) {
+        return {
+          ok: false,
+          error: `ES connection failed: ${response.status} ${response.statusText}`,
+        };
+      }
+      return { ok: true };
     } catch (error) {
-      console.error('Elasticsearch connection test failed:', error);
-      return false;
+      const message = getErrorMessage(error);
+      console.error('Elasticsearch connection test failed:', message);
+      return { ok: false, error: message };
     }
   }
 }

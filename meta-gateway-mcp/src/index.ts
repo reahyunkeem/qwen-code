@@ -1,5 +1,7 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import process from 'node:process';
+import console from 'node:console';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -10,7 +12,11 @@ import { OracleAdapter } from './adapters/oracle.js';
 import { PostgresAdapter } from './adapters/postgres.js';
 import { ElasticsearchAdapter } from './adapters/elasticsearch.js';
 import { StaticVectorAdapter } from './adapters/vector.js';
-import type { MetaAdapter } from './adapters/base.js';
+import {
+  getErrorMessage,
+  type MetaAdapter,
+  type MetaResult,
+} from './adapters/base.js';
 
 dotenv.config();
 
@@ -67,7 +73,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: 'search_meta',
         description:
-          'Search corporate metadata across Oracle, PostgreSQL, Elasticsearch, and Static Vector DB.',
+          'Search corporate metadata across Oracle, PostgreSQL, Elasticsearch, and Static Vector DB. Returns structured JSON with per-source status.',
         inputSchema: {
           type: 'object',
           properties: {
@@ -123,7 +129,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const status = await Promise.all(
       adapters.map(async (a) => ({
         name: a.name,
-        connected: await a.testConnection(),
+        ...(await a.testConnection()),
       })),
     );
     return {
@@ -161,39 +167,75 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         content: [
           {
             type: 'text',
-            text: `No active connectors found for source: ${sourceFilter}`,
+            text: JSON.stringify(
+              {
+                query,
+                source: sourceFilter,
+                total: 0,
+                results: [],
+                sources: [
+                  {
+                    name: sourceFilter,
+                    ok: false,
+                    error: 'No active connectors configured for this source.',
+                  },
+                ],
+              },
+              null,
+              2,
+            ),
           },
         ],
       };
     }
 
-    const results = await Promise.all(
-      activeAdapters.map((a) => a.search(query)),
+    const settledResults = await Promise.allSettled(
+      activeAdapters.map(async (adapter) => ({
+        name: adapter.name,
+        results: await adapter.search(query),
+      })),
     );
-    const flatResults = results.flat();
 
-    if (flatResults.length === 0) {
+    const sources = settledResults.map((result, index) => {
+      const adapterName = activeAdapters[index]?.name || 'unknown';
+      if (result.status === 'fulfilled') {
+        return {
+          name: result.value.name,
+          ok: true,
+          count: result.value.results.length,
+        };
+      }
       return {
-        content: [
-          {
-            type: 'text',
-            text: `No results found for "${query}" across the selected pillars.`,
-          },
-        ],
+        name: adapterName,
+        ok: false,
+        error: getErrorMessage(result.reason),
       };
-    }
+    });
 
-    // Format output
-    let output = `Found ${flatResults.length} metadata matches for "${query}":\n\n`;
-    flatResults.forEach((res) => {
-      output += `[${res.source.toUpperCase()}] ${res.type}: ${res.logicalName} (${res.physicalName})\n`;
-      if (res.description) output += `   Description: ${res.description}\n`;
-      if (res.location) output += `   Location: ${res.location}\n`;
-      output += `---\n`;
+    const flatResults: MetaResult[] = [];
+    settledResults.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        flatResults.push(...result.value.results);
+      }
     });
 
     return {
-      content: [{ type: 'text', text: output.trim() }],
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(
+            {
+              query,
+              source: sourceFilter,
+              total: flatResults.length,
+              results: flatResults,
+              sources,
+            },
+            null,
+            2,
+          ),
+        },
+      ],
     };
   }
 

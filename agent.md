@@ -172,15 +172,30 @@ graph TD
 
 #### 3. 결과 포맷
 
-검색 결과는 아래와 같은 포맷으로 구조화되어 에이전트에게 전달됩니다:
+검색 결과는 아래 JSON 포맷으로 에이전트에게 전달됩니다(소스별 상태 포함):
 
-```text
-Found [N] metadata matches for "[Query]":
-
-[SOURCE] TYPE: Logical Name (Physical Name)
-   Description: ...
-   Location: ...
----
+```json
+{
+  "query": "고객 등급",
+  "source": "all",
+  "total": 2,
+  "results": [
+    {
+      "source": "oracle",
+      "logicalName": "TB_CUSTOMER_GRADE",
+      "physicalName": "TB_CUSTOMER_GRADE",
+      "type": "TABLE",
+      "description": null,
+      "location": null
+    }
+  ],
+  "sources": [
+    { "name": "oracle", "ok": true, "count": 1 },
+    { "name": "postgres", "ok": false, "error": "connection refused" },
+    { "name": "elasticsearch", "ok": true, "count": 1 },
+    { "name": "vector", "ok": true, "count": 0 }
+  ]
+}
 ```
 
 ### 7.6 도구 선택 및 실행 원리 (Reasoning)
