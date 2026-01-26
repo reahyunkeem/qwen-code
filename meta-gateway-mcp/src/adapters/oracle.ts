@@ -1,5 +1,5 @@
 import oracledb from 'oracledb';
-import console from 'node:console';
+
 import { getErrorMessage } from './base.js';
 import type { MetaAdapter, MetaResult } from './base.js';
 
@@ -16,7 +16,7 @@ export class OracleAdapter implements MetaAdapter {
   }
 
   async search(query: string): Promise<MetaResult[]> {
-    let connection;
+    let connection: oracledb.Connection | undefined;
     try {
       connection = await oracledb.getConnection(this.config);
 
@@ -32,13 +32,14 @@ export class OracleAdapter implements MetaAdapter {
         FROM USER_TABLES 
         WHERE TABLE_NAME LIKE :1
       `;
-      const result = await connection.execute(sql, [
+      type OracleRow = [string, string, string, string, string | null];
+      const result = await connection.execute<OracleRow>(sql, [
         `%${query.toUpperCase()}%`,
       ]);
 
       if (!result.rows) return [];
 
-      return (result.rows as any[]).map((row) => ({
+      return result.rows.map((row) => ({
         source: row[0],
         logicalName: row[1],
         physicalName: row[2],
@@ -61,7 +62,7 @@ export class OracleAdapter implements MetaAdapter {
   }
 
   async testConnection(): Promise<{ ok: boolean; error?: string }> {
-    let connection;
+    let connection: oracledb.Connection | undefined;
     try {
       connection = await oracledb.getConnection(this.config);
       return { ok: true };

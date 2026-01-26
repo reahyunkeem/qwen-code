@@ -2,6 +2,31 @@ import { getErrorMessage } from './base.js';
 import type { MetaAdapter, MetaResult } from './base.js';
 import console from 'node:console';
 
+interface ESHit {
+  _index: string;
+  _id: string;
+  _score: number;
+  _source: {
+    title?: string;
+    name?: string;
+    [key: string]: unknown;
+  };
+}
+
+interface ESSearchResponse {
+  hits: {
+    hits: ESHit[];
+  };
+}
+
+interface ESCatIndex {
+  index: string;
+  health: string;
+  status: string;
+  uuid: string;
+  [key: string]: unknown;
+}
+
 export class ElasticsearchAdapter implements MetaAdapter {
   readonly name = 'elasticsearch';
   private node: string;
@@ -45,7 +70,7 @@ export class ElasticsearchAdapter implements MetaAdapter {
    */
   async searchByTemplate(
     templateId: string,
-    params: Record<string, any>,
+    params: Record<string, unknown>,
   ): Promise<MetaResult[]> {
     try {
       const url = `${this.node}/_search/template`;
@@ -66,10 +91,10 @@ export class ElasticsearchAdapter implements MetaAdapter {
         throw new Error(message);
       }
 
-      const searchRes = (await response.json()) as any;
+      const searchRes = (await response.json()) as ESSearchResponse;
       const hits = searchRes.hits?.hits || [];
 
-      return hits.map((hit: any) => ({
+      return hits.map((hit: ESHit) => ({
         source: 'elasticsearch_template',
         logicalName:
           hit._source.title || hit._source.name || `Template Match: ${hit._id}`,
@@ -99,7 +124,7 @@ export class ElasticsearchAdapter implements MetaAdapter {
         throw new Error(message);
       }
 
-      const indices = (await response.json()) as any[];
+      const indices = (await response.json()) as ESCatIndex[];
       return indices.map((idx) => ({
         source: 'elasticsearch',
         logicalName: `Index: ${idx.index}`,
@@ -141,10 +166,10 @@ export class ElasticsearchAdapter implements MetaAdapter {
         throw new Error(message);
       }
 
-      const searchRes = (await response.json()) as any;
+      const searchRes = (await response.json()) as ESSearchResponse;
       const hits = searchRes.hits?.hits || [];
 
-      return hits.map((hit: any) => ({
+      return hits.map((hit: ESHit) => ({
         source: 'elasticsearch',
         logicalName:
           hit._source.title || hit._source.name || 'Untitled Document',

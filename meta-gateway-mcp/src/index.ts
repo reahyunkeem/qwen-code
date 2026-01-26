@@ -146,7 +146,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
     const results = await esAdapter.searchByTemplate(
       args?.templateId as string,
-      args?.params as Record<string, any>,
+      args?.params as Record<string, unknown>,
     );
     return {
       content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
