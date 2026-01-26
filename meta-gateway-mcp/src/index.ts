@@ -8,15 +8,12 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import dotenv from 'dotenv';
 
-import { OracleAdapter } from './adapters/oracle.js';
-import { PostgresAdapter } from './adapters/postgres.js';
-import { ElasticsearchAdapter } from './adapters/elasticsearch.js';
-import { StaticVectorAdapter } from './adapters/vector.js';
 import {
   getErrorMessage,
   type MetaAdapter,
   type MetaResult,
 } from './adapters/base.js';
+import type { ElasticsearchAdapter } from './adapters/elasticsearch.js';
 
 dotenv.config();
 
@@ -36,32 +33,40 @@ const server = new Server(
 // Initialize Adapters from Env
 const adapters: MetaAdapter[] = [];
 
-if (process.env.ORACLE_USER) {
-  adapters.push(
-    new OracleAdapter(
-      process.env.ORACLE_USER,
-      process.env.ORACLE_PASSWORD || '',
-      process.env.ORACLE_CONNECTION_STRING || '',
-    ),
-  );
-}
+async function initAdapters(): Promise<void> {
+  if (process.env.ORACLE_USER) {
+    const { OracleAdapter } = await import('./adapters/oracle.js');
+    adapters.push(
+      new OracleAdapter(
+        process.env.ORACLE_USER,
+        process.env.ORACLE_PASSWORD || '',
+        process.env.ORACLE_CONNECTION_STRING || '',
+      ),
+    );
+  }
 
-if (process.env.PG_CONNECTION_STRING) {
-  adapters.push(new PostgresAdapter(process.env.PG_CONNECTION_STRING));
-}
+  if (process.env.PG_CONNECTION_STRING) {
+    const { PostgresAdapter } = await import('./adapters/postgres.js');
+    adapters.push(new PostgresAdapter(process.env.PG_CONNECTION_STRING));
+  }
 
-if (process.env.ES_NODE) {
-  adapters.push(
-    new ElasticsearchAdapter(
-      process.env.ES_NODE,
-      process.env.ES_API_KEY,
-      process.env.ES_DEFAULT_TEMPLATE_ID,
-    ),
-  );
-}
+  if (process.env.ES_NODE) {
+    const { ElasticsearchAdapter } = await import(
+      './adapters/elasticsearch.js'
+    );
+    adapters.push(
+      new ElasticsearchAdapter(
+        process.env.ES_NODE,
+        process.env.ES_API_KEY,
+        process.env.ES_DEFAULT_TEMPLATE_ID,
+      ),
+    );
+  }
 
-if (process.env.VECTOR_DB_PATH) {
-  adapters.push(new StaticVectorAdapter(process.env.VECTOR_DB_PATH));
+  if (process.env.VECTOR_DB_PATH) {
+    const { StaticVectorAdapter } = await import('./adapters/vector.js');
+    adapters.push(new StaticVectorAdapter(process.env.VECTOR_DB_PATH));
+  }
 }
 
 /**
@@ -84,7 +89,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             source: {
               type: 'string',
-              enum: ['all', 'oracle', 'postgres', 'elasticsearch', 'vector'],
+              //              enum: ['all', 'oracle', 'postgres', 'elasticsearch', 'vector'],
+              enum: ['all', 'oracle', 'postgres'],
               description:
                 'Specific source to search from (optional, defaults to all)',
             },
@@ -92,24 +98,24 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['query'],
         },
       },
-      {
-        name: 'search_es_template',
-        description: 'Search Elasticsearch using a specific search template.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            templateId: {
-              type: 'string',
-              description: 'The ID of the registered ES search template',
-            },
-            params: {
-              type: 'object',
-              description: 'Parameters for the template',
-            },
-          },
-          required: ['templateId', 'params'],
-        },
-      },
+      // {
+      //   name: 'search_es_template',
+      //   description: 'Search Elasticsearch using a specific search template.',
+      //   inputSchema: {
+      //     type: 'object',
+      //     properties: {
+      //       templateId: {
+      //         type: 'string',
+      //         description: 'The ID of the registered ES search template',
+      //       },
+      //       params: {
+      //         type: 'object',
+      //         description: 'Parameters for the template',
+      //       },
+      //     },
+      //     required: ['templateId', 'params'],
+      //   },
+      // },
       {
         name: 'check_connections',
         description: 'Verify connection status to all 4 meta pillars.',
@@ -246,6 +252,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
  * Main entry point.
  */
 async function main() {
+  await initAdapters();
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('Meta-Gateway MCP Server (4 Pillars) running on stdio');
