@@ -5,6 +5,7 @@
  */
 
 import esbuild from 'esbuild';
+import path from 'node:path';
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
@@ -51,18 +52,10 @@ const cssInjectPlugin = {
         // Read all imported CSS files and inline them
         const importRegex = /@import\s+'([^']+)';/g;
         let match;
-        const basePath = args.path.substring(0, args.path.lastIndexOf('/'));
+        const basePath = path.dirname(args.path);
         while ((match = importRegex.exec(css)) !== null) {
           const importPath = match[1];
-          // Resolve relative paths correctly
-          let fullPath;
-          if (importPath.startsWith('./')) {
-            fullPath = basePath + importPath.substring(1);
-          } else if (importPath.startsWith('../')) {
-            fullPath = basePath + '/' + importPath;
-          } else {
-            fullPath = basePath + '/' + importPath;
-          }
+          const fullPath = path.resolve(basePath, importPath);
 
           try {
             const importedCss = await fs.promises.readFile(fullPath, 'utf8');
