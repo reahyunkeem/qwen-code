@@ -491,14 +491,18 @@ export function execCommand(
             reject(error);
           } else {
             resolve({
-              stdout: stdout ?? '',
-              stderr: stderr ?? '',
+              stdout: (stdout as string) ?? '',
+              stderr: (stderr as string) ?? '',
               code: typeof error.code === 'number' ? error.code : 1,
             });
           }
           return;
         }
-        resolve({ stdout: stdout ?? '', stderr: stderr ?? '', code: 0 });
+        resolve({
+          stdout: (stdout as string) ?? '',
+          stderr: (stderr as string) ?? '',
+          code: 0,
+        });
       },
     );
     child.on('error', reject);
