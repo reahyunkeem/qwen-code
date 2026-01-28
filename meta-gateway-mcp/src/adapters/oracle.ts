@@ -44,7 +44,7 @@ export class OracleAdapter implements MetaAdapter {
         logicalName: row[1],
         physicalName: row[2],
         type: row[3],
-        description: row[4],
+        description: row[4] ?? undefined,
       }));
     } catch (error) {
       const message = getErrorMessage(error);

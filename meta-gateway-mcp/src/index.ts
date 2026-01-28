@@ -34,38 +34,38 @@ const server = new Server(
 const adapters: MetaAdapter[] = [];
 
 async function initAdapters(): Promise<void> {
-  if (process.env.ORACLE_USER) {
+  if (process.env['ORACLE_USER']) {
     const { OracleAdapter } = await import('./adapters/oracle.js');
     adapters.push(
       new OracleAdapter(
-        process.env.ORACLE_USER,
-        process.env.ORACLE_PASSWORD || '',
-        process.env.ORACLE_CONNECTION_STRING || '',
+        process.env['ORACLE_USER'],
+        process.env['ORACLE_PASSWORD'] || '',
+        process.env['ORACLE_CONNECTION_STRING'] || '',
       ),
     );
   }
 
-  if (process.env.PG_CONNECTION_STRING) {
+  if (process.env['PG_CONNECTION_STRING']) {
     const { PostgresAdapter } = await import('./adapters/postgres.js');
-    adapters.push(new PostgresAdapter(process.env.PG_CONNECTION_STRING));
+    adapters.push(new PostgresAdapter(process.env['PG_CONNECTION_STRING']));
   }
 
-  if (process.env.ES_NODE) {
+  if (process.env['ES_NODE']) {
     const { ElasticsearchAdapter } = await import(
       './adapters/elasticsearch.js'
     );
     adapters.push(
       new ElasticsearchAdapter(
-        process.env.ES_NODE,
-        process.env.ES_API_KEY,
-        process.env.ES_DEFAULT_TEMPLATE_ID,
+        process.env['ES_NODE'],
+        process.env['ES_API_KEY'],
+        process.env['ES_DEFAULT_TEMPLATE_ID'],
       ),
     );
   }
 
-  if (process.env.VECTOR_DB_PATH) {
+  if (process.env['VECTOR_DB_PATH']) {
     const { StaticVectorAdapter } = await import('./adapters/vector.js');
-    adapters.push(new StaticVectorAdapter(process.env.VECTOR_DB_PATH));
+    adapters.push(new StaticVectorAdapter(process.env['VECTOR_DB_PATH']));
   }
 }
 

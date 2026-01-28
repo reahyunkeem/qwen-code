@@ -6,7 +6,7 @@ dotenv.config();
 async function test() {
   console.log('Testing PostgreSQL Connection...');
   const conn =
-    process.env.PG_CONNECTION_STRING ||
+    process.env['PG_CONNECTION_STRING'] ||
     'postgresql://postgres:password123@localhost:5432/meta_db';
 
   const adapter = new PostgresAdapter(conn);
