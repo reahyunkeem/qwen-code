@@ -19,10 +19,14 @@
 
 import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 
-if (!process.cwd().includes('packages')) {
-  console.error('must be invoked from a package directory');
+const cwd = process.cwd();
+const isPackageDir =
+  cwd.includes(`${sep}packages${sep}`) || cwd.includes(`${sep}mcp${sep}`);
+
+if (!isPackageDir) {
+  console.error('must be invoked from a package or mcp directory');
   process.exit(1);
 }
 
