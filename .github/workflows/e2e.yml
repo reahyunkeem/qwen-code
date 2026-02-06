@@ -12,9 +12,9 @@ jobs:
     name: 'E2E Precheck'
     runs-on: 'ubuntu-latest'
     outputs:
-      should_run_e2e: ${{ steps.check.outputs.should_run_e2e }}
+      should_run_e2e: '${{ steps.check.outputs.should_run_e2e }}'
     steps:
-      - id: check
+      - id: 'check'
         name: 'Check OPENAI E2E requirements'
         run: |-
           if [ -n "${OPENAI_API_KEY}" ] && [ -n "${OPENAI_MODEL}" ] && [ -n "${OPENAI_BASE_URL}" ]; then
@@ -23,9 +23,9 @@ jobs:
             echo "should_run_e2e=false" >> "$GITHUB_OUTPUT"
           fi
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
-          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+          OPENAI_API_KEY: '${{ secrets.OPENAI_API_KEY }}'
+          OPENAI_MODEL: '${{ secrets.OPENAI_MODEL }}'
+          OPENAI_BASE_URL: '${{ secrets.OPENAI_BASE_URL }}'
 
   e2e-test-linux:
     name: 'E2E Test (Linux) - ${{ matrix.sandbox }}'
