@@ -6,7 +6,8 @@
   },
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "mcp/*"
   ],
   "repository": {
     "type": "git",

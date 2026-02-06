@@ -1,0 +1,18 @@
+services:
+  oracle-xe:
+    image: ${ORACLE_IMAGE:-gvenzl/oracle-xe:21-slim}
+    container_name: oracle-xe
+    ports:
+      - '1521:1521'
+      - '5500:5500'
+    volumes:
+      - ./scripts:/scripts:ro
+    environment:
+      ORACLE_PASSWORD: 'Oracle123'
+      APP_USER: 'app'
+      APP_USER_PASSWORD: 'App123'
+    healthcheck:
+      test: ['CMD', 'bash', '-lc', 'healthcheck.sh']
+      interval: 10s
+      timeout: 5s
+      retries: 20

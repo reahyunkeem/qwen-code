@@ -1,0 +1,23 @@
+{
+  "name": "@qwen-code/mcp-shared",
+  "version": "0.7.1",
+  "description": "Shared utilities for MCP services.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "node ../../scripts/build_package.js",
+    "dev": "tsx src/index.ts",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:ci": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}
