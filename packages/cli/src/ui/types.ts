@@ -128,6 +128,11 @@ export type HistoryItemWarning = HistoryItemBase & {
   text: string;
 };
 
+export type HistoryItemRetryCountdown = HistoryItemBase & {
+  type: 'retry_countdown';
+  text: string;
+};
+
 export type HistoryItemAbout = HistoryItemBase & {
   type: 'about';
   systemInfo: {
@@ -265,6 +270,7 @@ export type HistoryItemWithoutId =
   | HistoryItemInfo
   | HistoryItemError
   | HistoryItemWarning
+  | HistoryItemRetryCountdown
   | HistoryItemAbout
   | HistoryItemHelp
   | HistoryItemToolGroup
@@ -413,4 +419,24 @@ export interface ConfirmationRequest {
 
 export interface LoopDetectionConfirmationRequest {
   onComplete: (result: { userSelection: 'disable' | 'keep' }) => void;
+}
+
+export interface SettingInputRequest {
+  settingName: string;
+  settingDescription: string;
+  sensitive: boolean;
+  onSubmit: (value: string) => void;
+  onCancel: () => void;
+}
+
+export interface PluginChoice {
+  name: string;
+  description?: string;
+}
+
+export interface PluginChoiceRequest {
+  marketplaceName: string;
+  plugins: PluginChoice[];
+  onSelect: (pluginName: string) => void;
+  onCancel: () => void;
 }

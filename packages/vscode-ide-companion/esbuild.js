@@ -5,10 +5,16 @@
  */
 
 import esbuild from 'esbuild';
-import path from 'node:path';
+import { createRequire } from 'node:module';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const repoRoot = resolve(__dirname, '..', '..');
+const rootRequire = createRequire(resolve(repoRoot, 'package.json'));
 
 /**
  * @type {import('esbuild').Plugin}
@@ -17,8 +23,11 @@ const esbuildProblemMatcherPlugin = {
   name: 'esbuild-problem-matcher',
 
   setup(build) {
+    const isWatchMode = build.initialOptions.watch;
     build.onStart(() => {
-      console.log('[watch] build started');
+      if (isWatchMode) {
+        console.log('[watch] build started');
+      }
     });
     build.onEnd((result) => {
       result.errors.forEach(({ text, location }) => {
@@ -27,8 +36,46 @@ const esbuildProblemMatcherPlugin = {
           `    ${location.file}:${location.line}:${location.column}:`,
         );
       });
-      console.log('[watch] build finished');
+      if (isWatchMode) {
+        console.log('[watch] build finished');
+      }
     });
+  },
+};
+
+/**
+ * Ensure a single React copy in the webview bundle by resolving from repo root.
+ * Prevents mixing React 18/19 element types when nested node_modules exist.
+ * @type {import('esbuild').Plugin}
+ */
+const resolveFromRoot = (moduleId) => {
+  try {
+    return rootRequire.resolve(moduleId);
+  } catch {
+    return null;
+  }
+};
+
+const reactDedupPlugin = {
+  name: 'react-dedup',
+  setup(build) {
+    const aliases = [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+    ];
+
+    for (const alias of aliases) {
+      build.onResolve({ filter: new RegExp(`^${alias}$`) }, () => {
+        const resolved = resolveFromRoot(alias);
+        if (!resolved) {
+          return undefined;
+        }
+        return { path: resolved };
+      });
+    }
   },
 };
 
@@ -52,10 +99,18 @@ const cssInjectPlugin = {
         // Read all imported CSS files and inline them
         const importRegex = /@import\s+'([^']+)';/g;
         let match;
-        const basePath = path.dirname(args.path);
+        const basePath = args.path.substring(0, args.path.lastIndexOf('/'));
         while ((match = importRegex.exec(css)) !== null) {
           const importPath = match[1];
-          const fullPath = path.resolve(basePath, importPath);
+          // Resolve relative paths correctly
+          let fullPath;
+          if (importPath.startsWith('./')) {
+            fullPath = basePath + importPath.substring(1);
+          } else if (importPath.startsWith('../')) {
+            fullPath = basePath + '/' + importPath;
+          } else {
+            fullPath = basePath + '/' + importPath;
+          }
 
           try {
             const importedCss = await fs.promises.readFile(fullPath, 'utf8');
@@ -121,7 +176,7 @@ async function main() {
     platform: 'browser',
     outfile: 'dist/webview.js',
     logLevel: 'silent',
-    plugins: [cssInjectPlugin, esbuildProblemMatcherPlugin],
+    plugins: [reactDedupPlugin, cssInjectPlugin, esbuildProblemMatcherPlugin],
     jsx: 'automatic', // Use new JSX transform (React 17+)
     define: {
       'process.env.NODE_ENV': production ? '"production"' : '"development"',
