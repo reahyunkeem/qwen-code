@@ -107,6 +107,22 @@ sequenceDiagram
 - **테스트**: `npm test`를 통해 각 패키지의 단위 테스트 수행 및 `test:integration`으로 통합 테스트 수행.
 - **번들링**: `esbuild`를 사용하여 CLI 배포를 위한 단일 파일 번들링 수행.
 
+### 6.1 WSL 테스트 운영 팁 (권한/세션 이슈 대응)
+
+WSL 환경에서 테스트를 장시간 실행할 때 자주 발생하는 이슈와 권장 대응 방법입니다.
+
+- **tmux 사용 권장**: 세션 종료/터미널 닫힘에도 테스트를 유지하려면 `tmux`에서 실행.
+  - 시작: `tmux new -s qwen-test`
+  - 분리: `Ctrl+b`, `d`
+  - 재접속: `tmux attach -t qwen-test`
+- **로그 보존 실행**: `npm run test 2>&1 | tee test-$(date +%F-%H%M).log`
+- **권한 오류(EACCES) 대응**: 아래와 같은 에러가 나면 소유권 문제 가능성이 높음.
+  - 예: `EACCES: permission denied, open ... node_modules/.vite-temp/...`
+  - 원인: `sudo npm install` 또는 root 계정으로 실행해 `node_modules`가 `root:root`로 생성됨.
+  - 복구: `sudo chown -R <wsl-user>:<wsl-user> /mnt/c/workspace/qwen-code`
+- **재발 방지**: WSL에서 `npm install`, `npm run test`는 일반 사용자로 실행하고 `sudo npm ...`는 피함.
+- **잠금 파일 동기화 주의**: `npm ci`가 lock 불일치로 실패하면 먼저 `npm install`로 동기화 후 테스트.
+
 ---
 
 ## 7. 최근 구현 사항: Meta-Gateway MCP (`meta-gateway-mcp`)
@@ -241,5 +257,5 @@ Qwen LLM이 `search_meta` 도구를 사용할지 결정하는 과정은 **도구
 
 ---
 
-_최종 업데이트: 2026-01-20_
+_최종 업데이트: 2026-02-18_
 _작성자: Antigravity AI Agent_

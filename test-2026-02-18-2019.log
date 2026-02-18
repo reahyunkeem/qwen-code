@@ -1,0 +1,728 @@
+
+> @qwen-code/qwen-code@0.10.4 test
+> npm run test --workspaces --if-present --parallel
+
+
+> @qwen-code/qwen-code@0.10.4 test
+> vitest run
+
+
+ RUN  v3.2.4 /mnt/c/workspace/qwen-code/packages/cli
+      Coverage enabled with v8
+
+ ✓ src/ui/commands/setupGithubCommand.test.ts (8 tests) 98ms
+ ✓ src/ui/hooks/atCommandProcessor.test.ts (42 tests) 247ms
+ ✓ src/ui/hooks/vim.test.ts (87 tests) 782ms
+(node:616) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 resize listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ui/hooks/useGeminiStream.test.tsx (49 tests) 866ms
+ ✓ src/ui/components/StandaloneSessionPicker.test.tsx (15 tests) 2353ms
+ ✓ src/ui/hooks/useAtCompletion.test.ts (13 tests) 1087ms
+ ✓ src/ui/components/SettingsDialog.test.tsx (53 tests) 5375ms
+   ✓ SettingsDialog > Settings Toggling > should toggle setting with Enter key  322ms
+   ✓ SettingsDialog > Output Language > treats empty output language as auto  329ms
+   ✓ SettingsDialog > String Settings Editing > should allow editing and committing a string setting  607ms
+ ✓ src/ui/hooks/slashCommandProcessor.test.ts (35 tests) 2062ms
+ ✓ src/ui/auth/AuthDialog.test.tsx (10 tests) 616ms
+ ✓ src/config/config.test.ts (157 tests | 2 skipped) 2881ms
+ ✓ src/ui/hooks/useShellHistory.test.ts (7 tests) 583ms
+ ✓ src/ui/components/InputPrompt.test.tsx (95 tests | 1 skipped) 13286ms
+   ✓ InputPrompt > paste auto-submission protection > should allow submission after paste protection timeout  774ms
+   ✓ InputPrompt > large paste placeholder > should expand placeholder to full content on submit  769ms
+   ✓ InputPrompt > large paste placeholder > should expand same-size placeholders correctly when #2 appears first  829ms
+   ✓ InputPrompt > large paste placeholder > should write expanded placeholder content to shell history  773ms
+ ✓ src/ui/utils/MarkdownDisplay.test.tsx (31 tests) 792ms
+   ✓ <MarkdownDisplay /> > with 'Windows' line endings > renders a fenced code block without a language  349ms
+ ✓ src/ui/components/ThemeDialog.test.tsx (2 tests) 837ms
+   ✓ ThemeDialog Snapshots > should render correctly in theme selection mode  587ms
+ ✓ src/ui/components/shared/BaseSelectionList.test.tsx (26 tests | 1 skipped) 563ms
+ ✓ src/ui/hooks/useSlashCompletion.test.ts (22 tests) 499ms
+ ✓ src/ui/components/messages/DiffRenderer.test.tsx (16 tests) 600ms
+ ✓ src/ui/components/QwenOAuthProgress.test.tsx (22 tests) 375ms
+ ✓ src/ui/components/HistoryItemDisplay.test.tsx (13 tests) 521ms
+Invalid values:
+  Argument: approval-mode, Given: "invalid_mode", Choices: "plan", "default", "auto-edit", "yolo"
+Cannot use both --yolo (-y) and --approval-mode together. Use --approval-mode=yolo instead.
+process.exit unexpectedly called with "1"
+ ❯ src/config/config.integration.test.ts (19 tests | 1 failed) 14779ms
+   ✓ Configuration Integration Tests > File Filtering Configuration > should load default file filtering settings 131ms
+   ✓ Configuration Integration Tests > File Filtering Configuration > should load custom file filtering settings from configuration 3ms
+   ✓ Configuration Integration Tests > File Filtering Configuration > should merge user and workspace file filtering settings 2ms
+   ✓ Configuration Integration Tests > Configuration Integration > should handle partial configuration objects gracefully 1ms
+   ✓ Configuration Integration Tests > Configuration Integration > should handle empty configuration objects gracefully 1ms
+   ✓ Configuration Integration Tests > Configuration Integration > should handle missing configuration sections gracefully 1ms
+   ✓ Configuration Integration Tests > Real-world Configuration Scenarios > should handle a security-focused configuration 2ms
+   ✓ Configuration Integration Tests > Real-world Configuration Scenarios > should handle a CI/CD environment configuration 1ms
+   ✓ Configuration Integration Tests > Checkpointing Configuration > should enable checkpointing when the setting is true 1ms
+   ✓ Configuration Integration Tests > Extension Context Files > should have an empty array for extension context files by default 2ms
+   ✓ Configuration Integration Tests > Extension Context Files > should correctly store and return extension context file paths with outputLanguageFilePath 2ms
+   × Configuration Integration Tests > Approval Mode Integration Tests > should parse --approval-mode=auto-edit correctly through the full argument parsing flow 14376ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ Configuration Integration Tests > Approval Mode Integration Tests > should parse --approval-mode=plan correctly through the full argument parsing flow 93ms
+   ✓ Configuration Integration Tests > Approval Mode Integration Tests > should parse --approval-mode=yolo correctly through the full argument parsing flow 21ms
+   ✓ Configuration Integration Tests > Approval Mode Integration Tests > should parse --approval-mode=default correctly through the full argument parsing flow 18ms
+   ✓ Configuration Integration Tests > Approval Mode Integration Tests > should parse legacy --yolo flag correctly 18ms
+   ✓ Configuration Integration Tests > Approval Mode Integration Tests > should reject invalid approval mode values during argument parsing 41ms
+   ✓ Configuration Integration Tests > Approval Mode Integration Tests > should reject conflicting --yolo and --approval-mode flags 37ms
+   ✓ Configuration Integration Tests > Approval Mode Integration Tests > should handle backward compatibility with mixed scenarios 20ms
+ ✓ src/ui/AppContainer.test.tsx (31 tests) 555ms
+ ✓ src/ui/commands/restoreCommand.test.ts (13 tests) 117ms
+ ✓ src/ui/hooks/shellCommandProcessor.test.ts (20 tests) 499ms
+ ✓ src/ui/contexts/KeypressContext.test.tsx (56 tests) 372ms
+]2;Qwen - cli]2;Qwen - root]2;Qwen - root]2;Qwen - root ✓ src/gemini.test.tsx (11 tests) 1289ms
+   ✓ gemini.tsx main function > verifies that we dont load the config before relaunchAppInChildProcess  1132ms
+ ✓ src/ui/components/shared/text-buffer.test.ts (115 tests) 400ms
+ ✓ src/ui/hooks/useExtensionUpdates.test.ts (15 tests) 338ms
+ ✓ src/ui/components/StatsDisplay.test.tsx (12 tests) 495ms
+ ✓ src/ui/components/Help.test.tsx (4 tests) 213ms
+ ✓ src/ui/hooks/useCodingPlanUpdates.test.ts (13 tests) 169ms
+ ✓ src/ui/components/PermissionsModifyTrustDialog.test.tsx (6 tests) 355ms
+ ✓ src/services/FileCommandLoader.test.ts (39 tests) 225ms
+ ✓ src/ui/components/messages/ToolConfirmationMessage.test.tsx (13 tests) 241ms
+ ✓ src/ui/components/FolderTrustDialog.test.tsx (9 tests) 303ms
+ ✓ src/ui/components/Header.test.tsx (11 tests) 374ms
+ ✓ src/ui/components/ModelDialog.test.tsx (10 tests) 333ms
+ ✓ src/ui/hooks/useSelectionList.test.ts (44 tests) 233ms
+ ✓ src/acp-integration/session/SubAgentTracker.test.ts (21 tests) 251ms
+ ✓ src/ui/components/ModelStatsDisplay.test.tsx (6 tests) 255ms
+ ✓ src/services/command-migration-tool.test.ts (13 tests) 78ms
+ ✓ src/ui/components/shared/MaxSizedBox.test.tsx (21 tests) 226ms
+ ✓ src/ui/hooks/useKeypress.test.ts (15 tests) 97ms
+(node:1914) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 mcp-client-update listeners added to [EventEmitter]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ui/components/Composer.test.tsx (14 tests) 155ms
+ ✓ src/ui/components/PluginChoicePrompt.test.tsx (12 tests) 256ms
+ ✓ src/ui/components/views/McpStatus.test.tsx (12 tests) 192ms
+ ✓ src/commands/mcp/add.test.ts (20 tests) 664ms
+ ✓ src/ui/components/ModelSwitchDialog.test.tsx (11 tests) 165ms
+ ✓ src/ui/components/messages/ToolGroupMessage.test.tsx (14 tests) 209ms
+ ✓ src/ui/components/LoadingIndicator.test.tsx (16 tests) 172ms
+ ✓ src/ui/components/ToolStatsDisplay.test.tsx (5 tests) 182ms
+ ✓ src/ui/components/messages/ToolMessage.test.tsx (13 tests) 162ms
+ ✓ src/ui/components/SessionSummaryDisplay.test.tsx (3 tests) 317ms
+ ✓ src/nonInteractiveCli.test.ts (29 tests | 1 skipped) 377ms
+ ✓ src/ui/components/LoopDetectionConfirmation.test.tsx (2 tests) 124ms
+ ✓ src/ui/components/IdeTrustChangeDialog.test.tsx (6 tests) 160ms
+ ✓ src/ui/components/ShellConfirmationDialog.test.tsx (4 tests) 154ms
+ ✓ src/commands/extensions/settings.test.ts (20 tests) 393ms
+ ✓ src/config/settings.test.ts (101 tests) 147ms
+ ✓ src/ui/hooks/useCommandCompletion.test.ts (14 tests) 161ms
+ ✓ src/ui/utils/commandUtils.test.ts (26 tests) 63ms
+ ✓ src/ui/components/SettingInputPrompt.test.tsx (6 tests) 116ms
+ ✓ src/nonInteractive/session.test.ts (21 tests) 106ms
+ ✓ src/ui/components/messages/CompressionMessage.test.tsx (8 tests) 126ms
+ ✓ src/ui/commands/languageCommand.test.ts (47 tests) 143ms
+ ✓ src/ui/hooks/useVisionAutoSwitch.test.ts (36 tests) 148ms
+ ✓ src/ui/components/AppHeader.test.tsx (3 tests) 274ms
+ ✓ src/ui/hooks/useToolScheduler.test.ts (17 tests) 94ms
+ ✓ src/ui/hooks/useAutoAcceptIndicator.test.ts (15 tests) 139ms
+ ✓ src/services/FileCommandLoader-extension.test.ts (6 tests) 62ms
+ ✓ src/ui/components/views/ExtensionsList.test.tsx (9 tests) 92ms
+ ✓ src/ui/hooks/useMessageQueue.test.ts (9 tests) 110ms
+ ✓ src/ui/hooks/useQwenAuth.test.ts (17 tests) 169ms
+ ✓ src/acp-integration/session/Session.test.ts (10 tests) 68ms
+ ✓ src/ui/components/PrepareLabel.test.tsx (6 tests) 114ms
+ ✓ src/ui/components/AnsiOutput.test.tsx (6 tests) 84ms
+ ✓ src/ui/components/QueuedMessageDisplay.test.tsx (5 tests) 61ms
+ ✓ src/ui/components/views/ToolsList.test.tsx (3 tests) 130ms
+ ✓ src/ui/commands/extensionsCommand.test.ts (31 tests) 111ms
+ ✓ src/ui/hooks/useReverseSearchCompletion.test.tsx (10 tests) 94ms
+Successfully created new extension at /some/path.
+You can install this using "qwen extensions link /some/path" to test it out.
+Successfully created new extension from template "context" at /some/path.
+You can install this using "qwen extensions link /some/path" to test it out.
+Path already exists: /some/path
+ ✓ src/commands/extensions/new.test.ts (4 tests) 119ms
+ ✓ src/ui/components/shared/EnumSelector.test.tsx (9 tests) 94ms
+ ✓ src/ui/hooks/usePhraseCycler.test.ts (9 tests) 88ms
+ ✓ src/ui/contexts/SessionContext.test.tsx (4 tests) 78ms
+ ✓ src/services/prompt-processors/shellProcessor.test.ts (34 tests) 148ms
+ ✓ src/ui/hooks/useGitBranchName.test.ts (7 tests | 2 skipped) 130ms
+ ✓ src/ui/components/ConsentPrompt.test.tsx (5 tests) 85ms
+ ✓ src/ui/hooks/useInputHistoryStore.test.ts (14 tests) 119ms
+ ✓ src/ui/hooks/useLoadingIndicator.test.ts (5 tests) 110ms
+ ✓ src/ui/App.test.tsx (7 tests) 109ms
+No extensions installed.
+ ✓ src/utils/userStartupWarnings.test.ts (5 tests) 579ms
+   ✓ getUserStartupWarnings > home directory check > should return a warning when running in home directory  561ms
+ ✓ src/commands/extensions.test.tsx (11 tests) 190ms
+ ✓ src/ui/hooks/useEditorSettings.test.ts (10 tests) 81ms
+ ✓ src/ui/hooks/useFocus.test.ts (6 tests) 63ms
+ ✓ src/nonInteractive/io/BaseJsonOutputAdapter.test.ts (93 tests) 120ms
+ ✓ src/ui/hooks/useInputHistory.test.ts (11 tests) 95ms
+ ✓ src/nonInteractive/io/StreamJsonOutputAdapter.test.ts (46 tests) 60ms
+ ✓ src/ui/components/Footer.test.tsx (6 tests) 110ms
+ ✓ src/ui/components/shared/DescriptiveRadioButtonSelect.test.tsx (2 tests) 79ms
+ ✓ src/ui/hooks/useTimer.test.ts (8 tests) 81ms
+ ✓ src/ui/hooks/useHistoryManager.test.ts (8 tests) 82ms
+ ✓ src/ui/hooks/usePermissionsModifyTrust.test.ts (8 tests) 78ms
+ ✓ src/utils/modelConfigUtils.test.ts (28 tests) 59ms
+ ✓ src/ui/hooks/useFolderTrust.test.ts (9 tests) 86ms
+ ✓ src/ui/hooks/useAttentionNotifications.test.ts (6 tests) 62ms
+ ✓ src/ui/commands/exportCommand.test.ts (14 tests) 54ms
+ ✓ src/validateNonInterActiveAuth.test.ts (13 tests) 108ms
+ ✓ src/ui/hooks/useResumeCommand.test.ts (6 tests) 71ms
+ ✓ src/ui/components/TodoDisplay.test.tsx (6 tests) 93ms
+ ✓ src/ui/components/ContextSummaryDisplay.test.tsx (4 tests) 71ms
+ ✓ src/nonInteractive/control/ControlDispatcher.test.ts (34 tests) 68ms
+ ✓ src/commands/extensions/update.test.ts (14 tests) 97ms
+ ✓ src/ui/hooks/useMemoryMonitor.test.ts (3 tests) 53ms
+ ✓ src/commands/extensions/disable.test.ts (7 tests) 81ms
+ ✓ src/commands/mcp/remove.test.ts (4 tests) 109ms
+ ✓ src/services/FileCommandLoader-markdown.test.ts (3 tests) 37ms
+ ✓ src/ui/hooks/useIdeTrustListener.test.ts (5 tests) 84ms
+ ✓ src/commands/extensions/enable.test.ts (7 tests) 95ms
+ ✓ src/utils/handleAutoUpdate.test.ts (9 tests) 29ms
+ ✓ src/ui/hooks/useModelCommand.test.ts (3 tests) 49ms
+ ✓ src/ui/components/shared/RadioButtonSelect.test.tsx (5 tests) 47ms
+ ✓ src/ui/components/shared/vim-buffer-actions.test.ts (74 tests) 49ms
+ ✓ src/utils/nonInteractiveHelpers.test.ts (60 tests) 74ms
+Error parsing settings file.
+Unexpected end of JSON input
+Settings file may be corrupted. Please check the JSON syntax.
+ ✓ src/utils/commentJson.test.ts (8 tests) 42ms
+ ✓ src/utils/errors.test.ts (33 tests) 74ms
+ ✓ src/commands/extensions/link.test.ts (4 tests) 76ms
+ ✓ src/commands/extensions/list.test.ts (4 tests) 70ms
+ ✓ src/commands/extensions/install.test.ts (8 tests) 63ms
+ ✓ src/utils/settingsUtils.test.ts (73 tests) 62ms
+ ✓ src/nonInteractive/io/JsonOutputAdapter.test.ts (35 tests) 49ms
+ ✓ src/utils/systemInfo.test.ts (15 tests) 64ms
+ ✓ src/services/prompt-processors/atFileProcessor.test.ts (11 tests) 37ms
+ ✓ src/acp-integration/session/emitters/ToolCallEmitter.test.ts (33 tests) 37ms
+ ✓ src/ui/commands/memoryCommand.test.ts (13 tests) 58ms
+ ✓ src/utils/gitUtils.test.ts (24 tests) 59ms
+ ✓ src/ui/commands/ideCommand.test.ts (8 tests) 33ms
+ ✓ src/utils/languageUtils.test.ts (38 tests) 26ms
+ ✓ src/acp-integration/session/HistoryReplayer.test.ts (16 tests) 25ms
+ ✓ src/ui/utils/clipboardUtils.test.ts (6 tests) 16ms
+ ✓ src/ui/themes/theme-manager.test.ts (12 tests) 26ms
+ ✓ src/config/trustedFolders.test.ts (21 tests) 26ms
+ ✓ src/services/CommandService.test.ts (11 tests) 29ms
+ ✓ src/config/settingsSchema.test.ts (14 tests) 31ms
+ ✓ src/config/auth.test.ts (13 tests) 25ms
+ ✓ src/ui/commands/approvalModeCommand.test.ts (13 tests) 37ms
+ ✓ src/ui/commands/copyCommand.test.ts (11 tests) 39ms
+ ✓ src/commands/extensions/uninstall.test.ts (1 test) 40ms
+ ✓ src/ui/models/availableModels.test.ts (19 tests) 24ms
+ ✓ src/commands/extensions/consent.test.ts (17 tests) 30ms
+ ✓ src/ui/commands/directoryCommand.test.tsx (7 tests) 22ms
+ ✓ src/nonInteractive/io/StreamJsonInputReader.test.ts (11 tests) 23ms
+ ✓ src/ui/keyMatchers.test.ts (33 tests) 25ms
+ ✓ src/ui/commands/mcpCommand.test.ts (5 tests) 23ms
+ ✓ src/services/McpPromptLoader.test.ts (25 tests) 22ms
+ ✓ src/ui/utils/formatters.test.ts (25 tests) 18ms
+ ✓ src/acp-integration/session/emitters/MessageEmitter.test.ts (13 tests) 15ms
+ ✓ src/ui/commands/aboutCommand.test.ts (7 tests) 24ms
+ ✓ src/ui/commands/compressCommand.test.ts (5 tests) 25ms
+Fatal error: Failed to relaunch the CLI process.
+PROCESS_EXIT_CALLED
+Fatal error: Failed to relaunch the CLI process.
+PROCESS_EXIT_CALLED
+Fatal error: Failed to relaunch the CLI process.
+Runner failed
+node:internal/modules/cjs/loader:1210
+  throw err;
+  ^
+
+Error: Cannot find module '/app/cli.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.20.0
+Fatal error: Failed to relaunch the CLI process.
+PROCESS_EXIT_CALLED
+ ✓ src/utils/relaunch.test.ts (8 tests) 96ms
+ ✓ src/acp-integration/session/emitters/PlanEmitter.test.ts (17 tests) 20ms
+ ✓ src/ui/utils/updateCheck.test.ts (9 tests) 23ms
+ ✓ src/acp-integration/service/filesystem.test.ts (7 tests) 18ms
+ ✓ src/services/prompt-processors/injectionParser.test.ts (21 tests) 16ms
+ ✓ src/utils/installationInfo.test.ts (16 tests) 31ms
+ ✓ src/ui/commands/initCommand.test.ts (5 tests) 24ms
+ ✓ src/ui/commands/statsCommand.test.ts (3 tests) 21ms
+ ✓ src/utils/envVarResolver.test.ts (16 tests) 18ms
+ ✓ src/commands/mcp/list.test.ts (4 tests) 31ms
+ ✓ src/commands/mcp.test.ts (3 tests) 34ms
+ ✓ src/ui/commands/toolsCommand.test.ts (4 tests) 29ms
+ ✓ src/ui/commands/modelCommand.test.ts (8 tests) 21ms
+ ✓ src/commands/extensions/utils.test.ts (6 tests) 14ms
+ ✓ src/ui/themes/color-utils.test.ts (16 tests) 23ms
+ ✓ src/ui/utils/resumeHistoryUtils.test.ts (4 tests) 13ms
+ ✓ src/nonInteractiveCliCommands.test.ts (9 tests) 24ms
+ ✓ src/config/keyBindings.test.ts (3 tests) 12ms
+ ✓ src/ui/commands/bugCommand.test.ts (3 tests) 22ms
+ ✓ src/ui/commands/docsCommand.test.ts (3 tests) 26ms
+ ✓ src/utils/readStdin.test.ts (4 tests) 26ms
+ ✓ src/ui/utils/highlight.test.ts (16 tests) 10ms
+ ✓ src/ui/commands/helpCommand.test.ts (2 tests) 15ms
+ ✓ src/utils/deepMerge.test.ts (13 tests) 11ms
+ ✓ src/ui/commands/quitCommand.test.ts (1 test) 18ms
+ ✓ src/services/BuiltinCommandLoader.test.ts (7 tests) 17ms
+ ✓ src/utils/commands.test.ts (12 tests) 9ms
+ ✓ src/test-utils/mockCommandContext.test.ts (3 tests) 10ms
+ ✓ src/ui/commands/permissionsCommand.test.ts (3 tests) 19ms
+ ✓ src/ui/utils/computeStats.test.ts (12 tests) 10ms
+ ✓ src/ui/commands/clearCommand.test.ts (2 tests) 13ms
+ ✓ src/services/markdown-command-parser.test.ts (10 tests) 15ms
+ ✓ src/ui/commands/themeCommand.test.ts (2 tests) 8ms
+ ✓ src/utils/attentionNotification.test.ts (4 tests) 10ms
+ ✓ src/ui/commands/settingsCommand.test.ts (2 tests) 9ms
+ ✓ src/ui/utils/textUtils.test.ts (9 tests) 8ms
+ ✓ src/services/prompt-processors/argumentProcessor.test.ts (2 tests) 8ms
+ ✓ src/ui/commands/resumeCommand.test.ts (2 tests) 10ms
+ ✓ src/utils/acpModelUtils.test.ts (5 tests) 9ms
+ ✓ src/utils/systemInfoFields.test.ts (2 tests) 10ms
+ ✓ src/ui/utils/markdownUtilities.test.ts (7 tests) 7ms
+ ✓ src/utils/windowTitle.test.ts (7 tests) 9ms
+ ✓ src/ui/utils/sessionPickerUtils.test.ts (7 tests) 6ms
+ ✓ src/ui/commands/terminalSetupCommand.test.ts (5 tests) 16ms
+ ✓ src/ui/themes/theme.test.ts (5 tests) 12ms
+ ✓ src/ui/commands/authCommand.test.ts (2 tests) 9ms
+ ✓ src/utils/startupWarnings.test.ts (4 tests) 7ms
+ ✓ src/utils/cleanup.test.ts (4 tests) 6ms
+ ✓ src/ui/utils/displayUtils.test.ts (8 tests) 8ms
+ ✓ src/ui/commands/editorCommand.test.ts (2 tests) 9ms
+ ✓ src/utils/processUtils.test.ts (1 test) 5ms
+ ✓ src/config/modelProvidersScope.test.ts (4 tests) 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/config/config.integration.test.ts > Configuration Integration Tests > Approval Mode Integration Tests > should parse --approval-mode=auto-edit correctly through the full argument parsing flow
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/config/config.integration.test.ts:253:5
+    251|     let parseArguments: typeof import('./config.js').parseArguments;
+    252| 
+    253|     beforeEach(async () => {
+       |     ^
+    254|       // Import the argument parsing function for integration testing
+    255|       const { parseArguments: parseArgs } = await import('./config.js'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 208 passed (209)
+      Tests  1 failed | 3351 passed | 7 skipped (3359)
+   Start at  20:19:22
+   Duration  1488.45s (transform 124.31s, setup 52.84s, collect 11393.03s, tests 69.25s, environment 3466.49s, prepare 628.93s)
+
+JUNIT report written to /mnt/c/workspace/qwen-code/packages/cli/junit.xml
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /mnt/c/workspace/qwen-code/packages/cli
+npm error workspace @qwen-code/qwen-code@0.10.4
+npm error location /mnt/c/workspace/qwen-code/packages/cli
+npm error command failed
+npm error command sh -c vitest run
+
+
+> @qwen-code/qwen-code-core@0.10.4 test
+> vitest run
+
+
+ RUN  v3.2.4 /mnt/c/workspace/qwen-code/packages/core
+      Coverage enabled with v8
+
+ ✓ src/utils/workspaceContext.test.ts (34 tests) 65ms
+ ✓ src/core/logger.test.ts (38 tests) 227ms
+ ✓ src/mcp/token-storage/file-token-storage.test.ts (16 tests) 841ms
+ ✓ src/utils/filesearch/fileSearch.test.ts (27 tests) 243ms
+
++----------------- Qwen OAuth Device Authorization ------------------+
+|                                                                    |
+| Please visit the following URL in your browser to authorize:       |
+|                                                                    |
+| https://chat.qwen.ai/device?code=TEST123                           |
+|                                                                    |
+| Waiting for authorization to complete...                           |
+|                                                                    |
++--------------------------------------------------------------------+
+
+
++----------------- Qwen OAuth Device Authorization ------------------+
+|                                                                    |
+| Please visit the following URL in your browser to authorize:       |
+|                                                                    |
+| https://chat.qwen.ai/device?code=TEST123                           |
+|                                                                    |
+| Waiting for authorization to complete...                           |
+|                                                                    |
++--------------------------------------------------------------------+
+
+
++----------------- Qwen OAuth Device Authorization ------------------+
+|                                                                    |
+| Please visit the following URL in your browser to authorize:       |
+|                                                                    |
+| https://chat.qwen.ai/device?code=TEST123                           |
+|                                                                    |
+| Waiting for authorization to complete...                           |
+|                                                                    |
++--------------------------------------------------------------------+
+
+
++----------------- Qwen OAuth Device Authorization ------------------+
+|                                                                    |
+| Please visit the following URL in your browser to authorize:       |
+|                                                                    |
+| https://chat.qwen.ai/device?code=TEST123                           |
+|                                                                    |
+| Waiting for authorization to complete...                           |
+|                                                                    |
++--------------------------------------------------------------------+
+
+
++----------------- Qwen OAuth Device Authorization ------------------+
+|                                                                    |
+| Please visit the following URL in your browser to authorize:       |
+|                                                                    |
+| https://chat.qwen.ai/device?code=TEST123                           |
+|                                                                    |
+| Waiting for authorization to complete...                           |
+|                                                                    |
++--------------------------------------------------------------------+
+
+ ✓ src/qwen/qwenOAuth2.test.ts (81 tests) 2268ms
+   ✓ getQwenOAuthClient - Enhanced Error Scenarios > should handle different authentication failure reasons - timeout  2009ms
+ ✓ src/tools/ripGrep.test.ts (40 tests) 538ms
+ ✓ src/tools/lsp.test.ts (69 tests) 1089ms
+ ✓ src/services/gitService.test.ts (12 tests) 111ms
+ ✓ src/services/loopDetectionService.test.ts (37 tests) 421ms
+ ✓ src/core/anthropicContentGenerator/anthropicContentGenerator.test.ts (10 tests) 4825ms
+   ✓ AnthropicContentGenerator > passes a QwenCode User-Agent header to the Anthropic SDK  2722ms
+   ✓ AnthropicContentGenerator > omits the anthropic beta header when reasoning is disabled  369ms
+ ✓ src/utils/openaiLogger.test.ts (25 tests) 254ms
+ ✓ src/tools/read-file.test.ts (27 tests) 257ms
+ ✓ src/utils/fileUtils.test.ts (65 tests) 180ms
+ ✓ src/utils/memoryDiscovery.test.ts (14 tests) 162ms
+(node:6421) MaxListenersExceededWarning: Possible EventTarget memory leak detected. 11 abort listeners added to [AbortSignal]. MaxListeners is 10. Use events.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/tools/grep.test.ts (29 tests) 709ms
+(node:6408) MaxListenersExceededWarning: Possible EventTarget memory leak detected. 11 abort listeners added to [AbortSignal]. MaxListeners is 10. Use events.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/tools/glob.test.ts (37 tests) 3411ms
+   ✓ GlobTool > file count truncation > should truncate results when more than 500 files are found  524ms
+   ✓ GlobTool > file count truncation > should not truncate when exactly 500 files are found  364ms
+   ✓ GlobTool > file count truncation > should use correct singular/plural in truncation message for 1 file truncated  334ms
+   ✓ GlobTool > file count truncation > should use correct plural in truncation message for multiple files truncated  372ms
+ ❯ src/tools/edit.test.ts (54 tests | 1 failed) 326ms
+   ✓ EditTool > applyReplacement > should return newString if isNewFile is true 5ms
+   ✓ EditTool > applyReplacement > should return newString if currentContent is null and oldString is empty (defensive) 1ms
+   ✓ EditTool > applyReplacement > should return empty string if currentContent is null and oldString is not empty (defensive) 1ms
+   ✓ EditTool > applyReplacement > should replace oldString with newString in currentContent 1ms
+   ✓ EditTool > applyReplacement > should return currentContent if oldString is empty and not a new file 1ms
+   ✓ EditTool > applyReplacement > should treat $ literally and not as replacement pattern 1ms
+   ✓ EditTool > applyReplacement > should treat $' literally and not as a replacement pattern 1ms
+   ✓ EditTool > applyReplacement > should treat $& literally and not as a replacement pattern 1ms
+   ✓ EditTool > applyReplacement > should treat $` literally and not as a replacement pattern 1ms
+   ✓ EditTool > applyReplacement > should treat $1, $2 capture groups literally 2ms
+   ✓ EditTool > applyReplacement > should use replaceAll for normal strings without problematic $ sequences 1ms
+   ✓ EditTool > applyReplacement > should handle multiple occurrences with problematic $ sequences 1ms
+   ✓ EditTool > applyReplacement > should handle complex regex patterns with $ at end 2ms
+   ✓ EditTool > applyReplacement > should handle empty replacement with problematic $ in newString 2ms
+   ✓ EditTool > applyReplacement > should handle $$ (escaped dollar) correctly 1ms
+   ✓ EditTool > validateToolParams > should return null for valid params 65ms
+   ✓ EditTool > validateToolParams > should return error for relative path 4ms
+   ✓ EditTool > validateToolParams > should return error for path outside root 6ms
+   ✓ EditTool > shouldConfirmExecute > should throw an error if params are invalid 5ms
+   ✓ EditTool > shouldConfirmExecute > should request confirmation for valid edit 11ms
+   ✓ EditTool > shouldConfirmExecute > should return false if old_string is not found 5ms
+   ✓ EditTool > shouldConfirmExecute > should return false if multiple occurrences of old_string are found 6ms
+   ✓ EditTool > shouldConfirmExecute > should request confirmation for creating a new file (empty old_string) 6ms
+   ✓ EditTool > shouldConfirmExecute > should rethrow calculateEdit errors when the abort signal is triggered 6ms
+   ✓ EditTool > execute > should throw error if file path is not absolute 5ms
+   ✓ EditTool > execute > should throw error if file path is empty 7ms
+   ✓ EditTool > execute > should reject when calculateEdit fails after an abort signal 5ms
+   ✓ EditTool > execute > should edit an existing file and return diff with fileName 10ms
+   ✓ EditTool > execute > should create a new file if old_string is empty and file does not exist, and return created message 10ms
+   ✓ EditTool > execute > should create new file with BOM when defaultFileEncoding is utf-8-bom 6ms
+   ✓ EditTool > execute > should create new file without BOM when defaultFileEncoding is utf-8 5ms
+   ✓ EditTool > execute > should preserve BOM character in content when editing existing file 5ms
+   ✓ EditTool > execute > should return error if old_string is not found in file 6ms
+   ✓ EditTool > execute > should return error if multiple occurrences of old_string are found and replace_all is false 6ms
+   ✓ EditTool > execute > should successfully replace multiple occurrences when replace_all is true 7ms
+   ✓ EditTool > execute > should return error if trying to create a file that already exists (empty old_string) 5ms
+   ✓ EditTool > execute > should not include modification message when proposed content is not modified 6ms
+   ✓ EditTool > execute > should not include modification message when modified_by_user is not provided 6ms
+   ✓ EditTool > execute > should return error if old_string and new_string are identical 5ms
+   ✓ EditTool > execute > should return EDIT_NO_CHANGE error if replacement results in identical content 5ms
+   ✓ EditTool > Error Scenarios > should return FILE_NOT_FOUND error 4ms
+   ✓ EditTool > Error Scenarios > should return ATTEMPT_TO_CREATE_EXISTING_FILE error 5ms
+   ✓ EditTool > Error Scenarios > should return NO_OCCURRENCE_FOUND error 4ms
+   ✓ EditTool > Error Scenarios > should return EXPECTED_OCCURRENCE_MISMATCH error when replace_all is false and text is not unique 6ms
+   ✓ EditTool > Error Scenarios > should return NO_CHANGE error 5ms
+   ✓ EditTool > Error Scenarios > should throw INVALID_PARAMETERS error for relative path 4ms
+   × EditTool > Error Scenarios > should return FILE_WRITE_FAILURE on write error 25ms
+     → expected undefined to be 'file_write_failure' // Object.is equality
+   ✓ EditTool > getDescription > should return "No file changes to..." if old_string and new_string are the same 5ms
+   ✓ EditTool > getDescription > should return a snippet of old and new strings if they are different 5ms
+   ✓ EditTool > getDescription > should handle very short strings correctly in the description 5ms
+   ✓ EditTool > getDescription > should truncate long strings in the description 4ms
+   ✓ EditTool > workspace boundary validation > should validate paths are within workspace root 4ms
+   ✓ EditTool > workspace boundary validation > should reject paths outside workspace root 4ms
+   ✓ EditTool > IDE mode > should call ideClient.openDiff and update params on confirmation 6ms
+ ✓ src/tools/write-file.test.ts (34 tests) 355ms
+ ✓ src/core/client.test.ts (48 tests) 451ms
+ ✓ src/tools/ls.test.ts (22 tests) 300ms
+ ✓ src/mcp/token-storage/keychain-token-storage.test.ts (24 tests) 1576ms
+ ✓ src/core/geminiChat.test.ts (30 tests) 5140ms
+   ✓ GeminiChat > sendMessageStream > should fail if the stream ends with an empty part and has no finishReason  504ms
+   ✓ GeminiChat > sendMessageStream > should throw an error when a tool call is followed by an empty stream response  504ms
+   ✓ GeminiChat > sendMessageStream > should throw InvalidStreamError when no tool call and no finish reason  503ms
+   ✓ GeminiChat > sendMessageStream > should throw InvalidStreamError when no tool call and empty response text  503ms
+   ✓ GeminiChat > sendMessageStream with retries > should yield a RETRY event when an invalid stream is encountered  505ms
+   ✓ GeminiChat > sendMessageStream with retries > should retry on invalid content, succeed, and report metrics  510ms
+   ✓ GeminiChat > sendMessageStream with retries > should fail after all retries on persistent invalid content and report metrics  507ms
+   ✓ GeminiChat > should correctly retry and append to an existing history mid-conversation  509ms
+   ✓ GeminiChat > should retry if the model returns a completely empty stream (no chunks)  505ms
+   ✓ GeminiChat > should discard valid partial content from a failed attempt upon retry  504ms
+ ✓ src/subagents/subagent.test.ts (20 tests | 2 skipped) 976ms
+   ✓ subagent.ts > SubAgentScope > create (Tool Validation) > should create a SubAgentScope successfully with minimal config  608ms
+ ✓ src/extension/extensionSettings.test.ts (23 tests) 154ms
+ ✓ src/extension/extensionManager.test.ts (34 tests) 237ms
+ ✓ src/mcp/oauth-provider.test.ts (22 tests) 207ms
+ ✓ src/utils/filesearch/crawler.test.ts (18 tests) 132ms
+ ✓ src/qwen/sharedTokenManager.test.ts (31 tests) 301ms
+ ✓ src/services/shellExecutionService.test.ts (37 tests) 134ms
+ ✓ src/tools/mcp-tool.test.ts (45 tests) 243ms
+ ✓ src/core/coreToolScheduler.test.ts (36 tests) 362ms
+ ✓ src/utils/gitIgnoreParser.test.ts (20 tests) 107ms
+ ✓ src/services/fileDiscoveryService.test.ts (13 tests) 78ms
+ ✓ src/utils/terminalSerializer.test.ts (16 tests) 84ms
+ ✓ src/utils/getFolderStructure.test.ts (15 tests) 96ms
+ ✓ src/utils/schemaValidator.test.ts (22 tests) 148ms
+ ✓ src/utils/readManyFiles.test.ts (15 tests) 83ms
+ ✓ src/utils/request-tokenizer/textTokenizer.test.ts (31 tests) 120ms
+ ✓ src/utils/editor.test.ts (127 tests) 67ms
+ ✓ src/core/prompts.test.ts (51 tests) 70ms
+ ✓ src/tools/memoryTool.test.ts (29 tests) 121ms
+ ✓ src/tools/shell.test.ts (53 tests) 364ms
+ ❯ src/utils/pathReader.test.ts (16 tests | 1 failed) 107ms
+   ✓ readPathFromWorkspace > should read a text file from the CWD 13ms
+   ✓ readPathFromWorkspace > should read a file from a secondary workspace directory 3ms
+   ✓ readPathFromWorkspace > should prioritize CWD when file exists in both CWD and secondary dir 2ms
+   ✓ readPathFromWorkspace > should read an image file and return it as inlineData (Part object) 2ms
+   ✓ readPathFromWorkspace > should read a generic binary file and return an info string 1ms
+   ✓ readPathFromWorkspace > should read a file from an absolute path if within workspace 3ms
+   ✓ readPathFromWorkspace > Directory Expansion > should expand a directory and read the content of its files 14ms
+   ✓ readPathFromWorkspace > Directory Expansion > should recursively expand a directory and read all nested files 4ms
+   ✓ readPathFromWorkspace > Directory Expansion > should handle mixed content and include files from subdirectories 3ms
+   ✓ readPathFromWorkspace > Directory Expansion > should handle an empty directory 1ms
+   ✓ readPathFromWorkspace > File Ignoring > should return an empty array for an ignored file 2ms
+   ✓ readPathFromWorkspace > File Ignoring > should not read ignored files when expanding a directory 4ms
+   ✓ readPathFromWorkspace > should throw an error for an absolute path outside the workspace 3ms
+   ✓ readPathFromWorkspace > should throw an error if a relative path is not found anywhere 1ms
+   × readPathFromWorkspace > should return an error string if reading a file with no permissions 14ms
+     → expected 'you cannot read me' to contain 'Error reading file unreadable.txt'
+   ✓ readPathFromWorkspace > should return an error string for files exceeding the size limit 34ms
+ ✓ src/qwen/qwenContentGenerator.test.ts (44 tests) 264ms
+ ✓ src/config/config.test.ts (75 tests) 298ms
+ ✓ src/tools/modifiable-tool.test.ts (11 tests) 55ms
+ ✓ src/extension/claude-converter.test.ts (11 tests) 78ms
+ ✓ src/telemetry/metrics.test.ts (38 tests) 1527ms
+ ✓ src/subagents/subagent-manager.test.ts (52 tests) 159ms
+ ✓ src/ide/ideContext.test.ts (23 tests) 26ms
+ ✓ src/utils/memoryImportProcessor.test.ts (28 tests) 76ms
+ ✓ src/telemetry/loggers.test.ts (24 tests) 147ms
+ ✓ src/utils/environmentContext.test.ts (7 tests) 41ms
+ ✓ src/core/openaiContentGenerator/streamingToolCallParser.test.ts (51 tests) 48ms
+ ✓ src/utils/secure-browser-launcher.test.ts (14 tests) 34ms
+ ✓ src/services/sessionService.test.ts (25 tests) 45ms
+ ✓ src/tools/web-fetch.test.ts (7 tests) 101ms
+ ✓ src/utils/qwenIgnoreParser.test.ts (2 tests) 26ms
+ ✓ src/extension/github.test.ts (28 tests) 122ms
+ ✓ src/utils/paths.test.ts (100 tests) 60ms
+ ✓ src/core/openaiContentGenerator/pipeline.test.ts (21 tests) 68ms
+ ✓ src/tools/tool-registry.test.ts (9 tests) 104ms
+(node:8017) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ide/ide-client.test.ts (18 tests) 49ms
+ ✓ src/subagents/subagent-statistics.test.ts (30 tests) 55ms
+ ✓ src/tools/web-search/index.test.ts (10 tests) 96ms
+ ✓ src/lsp/NativeLspService.integration.test.ts (30 tests) 55ms
+ ✓ src/core/openaiContentGenerator/errorHandler.test.ts (36 tests) 33ms
+ ✓ src/core/openaiContentGenerator/provider/dashscope.test.ts (41 tests) 77ms
+ ✓ src/utils/debugLogger.test.ts (12 tests) 69ms
+ ✓ src/telemetry/qwen-logger/qwen-logger.test.ts (23 tests) 42ms
+ ✓ src/utils/nextSpeakerChecker.test.ts (10 tests) 38ms
+ ✓ src/mcp/token-storage/hybrid-token-storage.test.ts (11 tests) 84ms
+ ✓ src/mcp/oauth-token-storage.test.ts (28 tests) 41ms
+ ✓ src/skills/skill-manager.test.ts (33 tests) 58ms
+ ✓ src/core/openaiContentGenerator/converter.test.ts (49 tests) 49ms
+ ✓ src/utils/filesearch/ignore.test.ts (12 tests) 35ms
+ ✓ src/utils/summarizer.test.ts (8 tests) 75ms
+ ✓ src/utils/systemEncoding.test.ts (39 tests) 28ms
+ ✓ src/core/tokenLimits.test.ts (69 tests) 28ms
+ ✓ src/core/contentGenerator.test.ts (4 tests) 175ms
+ ✓ src/core/__tests__/openaiTimeoutHandling.test.ts (12 tests) 64ms
+ ✓ src/tools/todoWrite.test.ts (17 tests) 38ms
+ ✓ src/tools/skill.test.ts (21 tests) 59ms
+ ✓ src/models/modelsConfig.test.ts (41 tests) 44ms
+ ✓ src/tools/mcp-client.test.ts (26 tests) 68ms
+ ✓ src/utils/retry.test.ts (29 tests) 50ms
+ ✓ src/subagents/validation.test.ts (37 tests) 39ms
+ ✓ src/skills/skill-load.test.ts (16 tests) 17ms
+ ✓ src/utils/generateContentResponseUtilities.test.ts (29 tests) 19ms
+ ✓ src/mcp/oauth-utils.test.ts (25 tests) 24ms
+ ✓ src/utils/subagentGenerator.test.ts (9 tests) 22ms
+ ✓ src/tools/task.test.ts (23 tests) 68ms
+ ✓ src/telemetry/sdk.test.ts (6 tests) 28ms
+ ✓ src/utils/installationManager.test.ts (4 tests) 13ms
+ ✓ src/utils/shell-utils.test.ts (69 tests) 33ms
+ ✓ src/core/turn.test.ts (20 tests) 27ms
+ ✓ src/core/openaiContentGenerator/openaiContentGenerator.test.ts (13 tests) 26ms
+ ✓ src/mcp/google-auth-provider.test.ts (8 tests) 24ms
+ ✓ src/lsp/NativeLspService.test.ts (3 tests) 31ms
+ ✓ src/core/anthropicContentGenerator/converter.test.ts (27 tests) 23ms
+ ✓ src/extension/marketplace.test.ts (18 tests) 26ms
+ ✓ src/core/loggingContentGenerator/loggingContentGenerator.test.ts (4 tests) 22ms
+ ✓ src/ide/ide-installer.test.ts (10 tests) 24ms
+ ✓ src/utils/ignorePatterns.test.ts (28 tests) 20ms
+ ✓ src/ide/detect-ide.test.ts (14 tests) 14ms
+ ✓ src/core/nonInteractiveToolExecutor.test.ts (8 tests) 26ms
+ ✓ src/telemetry/telemetry.test.ts (2 tests) 42ms
+ ✓ src/services/chatRecordingService.test.ts (11 tests) 36ms
+ ✓ src/core/baseLlmClient.test.ts (18 tests) 34ms
+ ✓ src/utils/partUtils.test.ts (37 tests) 15ms
+ ✓ src/core/openaiContentGenerator/provider/default.test.ts (14 tests) 25ms
+ ✓ src/core/geminiContentGenerator/geminiContentGenerator.test.ts (10 tests) 24ms
+ ✓ src/services/fileSystemService.test.ts (10 tests) 18ms
+ ✓ src/telemetry/uiTelemetry.test.ts (21 tests) 23ms
+ ✓ src/core/openaiContentGenerator/provider/openrouter.test.ts (12 tests) 21ms
+ ✓ src/utils/errorReporting.test.ts (5 tests) 13ms
+ ✓ src/utils/filesearch/crawlCache.test.ts (9 tests) 21ms
+ ✓ src/mcp/sa-impersonation-provider.test.ts (8 tests) 24ms
+ ✓ src/utils/envVarResolver.test.ts (16 tests) 15ms
+ ✓ src/lsp/LspConfigLoader.test.ts (2 tests) 15ms
+ ✓ src/extension/gemini-converter.test.ts (9 tests) 14ms
+ ✓ src/output/json-formatter.test.ts (15 tests) 12ms
+ ✓ src/utils/safeJsonParse.test.ts (14 tests) 15ms
+ ✓ src/utils/yaml-parser.test.ts (18 tests) 13ms
+ ✓ src/utils/toml-to-markdown-converter.test.ts (10 tests) 15ms
+ ✓ src/tools/diffOptions.test.ts (9 tests) 11ms
+ ✓ src/services/chatCompressionService.test.ts (19 tests) 27ms
+ ✓ src/utils/request-tokenizer/imageTokenizer.test.ts (9 tests) 12ms
+ ✓ src/tools/tools.test.ts (11 tests) 12ms
+ ✓ src/utils/request-tokenizer/requestTokenizer.test.ts (11 tests) 12ms
+ ✓ src/utils/editHelper.test.ts (17 tests) 10ms
+ ✓ src/core/openaiContentGenerator/provider/modelscope.test.ts (5 tests) 7ms
+ ✓ src/subagents/builtin-agents.test.ts (8 tests) 11ms
+ ✓ src/models/modelRegistry.test.ts (35 tests) 20ms
+ ✓ src/extension/storage.test.ts (5 tests) 10ms
+ ✓ src/core/openaiContentGenerator/provider/deepseek.test.ts (5 tests) 17ms
+ ✓ src/ide/process-utils.test.ts (6 tests) 10ms
+ ✓ src/mcp/token-storage/base-token-storage.test.ts (12 tests) 11ms
+ ✓ src/extension/settings.test.ts (10 tests) 12ms
+ ✓ src/utils/configResolver.test.ts (12 tests) 9ms
+ ✓ src/utils/schemaConverter.test.ts (12 tests) 8ms
+ ✓ src/extension/override.test.ts (16 tests) 8ms
+ ✓ src/utils/rateLimit.test.ts (10 tests) 8ms
+ ✓ src/utils/runtimeFetchOptions.test.ts (4 tests) 7ms
+ ✓ src/utils/quotaErrorDetection.test.ts (17 tests) 10ms
+ ✓ src/utils/errors.test.ts (12 tests) 8ms
+ ✓ src/utils/filesearch/result-cache.test.ts (3 tests) 11ms
+ ✓ src/utils/thoughtUtils.test.ts (11 tests) 11ms
+ ✓ src/utils/safeJsonStringify.test.ts (8 tests) 7ms
+ ✓ src/utils/textUtils.test.ts (12 tests) 8ms
+ ✓ src/core/geminiRequest.test.ts (12 tests) 11ms
+ ✓ src/utils/fetch.test.ts (3 tests) 9ms
+ ✓ src/subagents/types.test.ts (3 tests) 10ms
+ ✓ src/models/modelConfigResolver.test.ts (19 tests) 25ms
+ ✓ src/config/storage.test.ts (5 tests) 8ms
+ ✓ src/telemetry/telemetry-utils.test.ts (6 tests) 7ms
+ ✓ src/index.test.ts (1 test) 4ms
+ ✓ src/telemetry/config.test.ts (11 tests) 14ms
+ ✓ src/extension/variables.test.ts (1 test) 6ms
+ ✓ src/tools/exitPlanMode.test.ts (16 tests) 24ms
+ ✓ src/utils/shellReadOnlyChecker.test.ts (33 tests) 20ms
+ ✓ src/tools/mcp-client-manager.test.ts (7 tests) 17ms
+ ✓ src/utils/errorParsing.test.ts (11 tests) 8ms
+ ✓ src/core/geminiContentGenerator/index.test.ts (1 test) 5ms
+ ✓ src/utils/tool-utils.test.ts (19 tests) 8ms
+ ✓ src/utils/ripgrepUtils.test.ts (6 tests) 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/tools/edit.test.ts > EditTool > Error Scenarios > should return FILE_WRITE_FAILURE on write error
+AssertionError: expected undefined to be 'file_write_failure' // Object.is equality
+
+[32m- Expected:[39m 
+"file_write_failure"
+
+[31m+ Received:[39m 
+undefined
+
+ ❯ src/tools/edit.test.ts:803:34
+    801|       const invocation = tool.build(params);
+    802|       const result = await invocation.execute(new AbortController().si…
+    803|       expect(result.error?.type).toBe(ToolErrorType.FILE_WRITE_FAILURE…
+       |                                  ^
+    804|     });
+    805|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/utils/pathReader.test.ts > readPathFromWorkspace > should return an error string if reading a file with no permissions
+AssertionError: expected 'you cannot read me' to contain 'Error reading file unreadable.txt'
+
+Expected: [32m"Error reading file unreadable.txt"[39m
+Received: [31m"you cannot read me"[39m
+
+ ❯ src/utils/pathReader.test.ts:389:26
+    387| 
+    388|       // processSingleFileContent formats errors using the relative pa…
+    389|       expect(textResult).toContain('Error reading file unreadable.txt'…
+       |                          ^
+    390|       expect(textResult).toMatch(/(EACCES|permission denied)/i);
+    391|     },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 164 passed (166)
+      Tests  2 failed | 3667 passed | 2 skipped (3671)
+   Start at  20:44:19
+   Duration  266.23s (transform 44.44s, setup 10.19s, collect 2133.65s, tests 34.01s, environment 57ms, prepare 323.44s)
+
+JUNIT report written to /mnt/c/workspace/qwen-code/packages/core/junit.xml
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /mnt/c/workspace/qwen-code/packages/core
+npm error workspace @qwen-code/qwen-code-core@0.10.4
+npm error location /mnt/c/workspace/qwen-code/packages/core
+npm error command failed
+npm error command sh -c vitest run
+
+
+> @qwen-code/sdk@0.1.4 test
+> vitest run
+
+
+ RUN  v1.6.1 /mnt/c/workspace/qwen-code/packages/sdk-typescript
+
+ ✓ test/unit/cliPath.test.ts  (33 tests) 60ms
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] Failed to initialize CLI process: Transport start aborted
+2026-02-18 20:48:56 [DEBUG] [ProcessTransport] Spawning CLI (native): qwen --input-format stream-json --output-format stream-json --channel=SDK
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] Failed to initialize CLI process: Transport start aborted
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process error: Spawn failed
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process exited with code 1
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process terminated by signal SIGTERM
+(node:10502) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added to [process]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process error: Process error
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process exited with code 1
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process error: Process error
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process exited with code 1
+2026-02-18 20:48:56 [ERROR] [ProcessTransport] CLI process terminated by signal SIGKILL
+2026-02-18 20:48:56 [INFO]  [ProcessTransport] CLI process started successfully
+2026-02-18 20:48:56 [DEBUG] [ProcessTransport] Forking CLI (node): /path/to/cli.js --input-format stream-json --output-format stream-json --channel=SDK
+2026-02-18 20:48:56 [INFO]  [ProcessTransport] CLI process started successfully
+ ✓ test/unit/ProcessTransport.test.ts  (66 tests) 173ms
+2026-02-18 20:48:56 [ERROR] [Query] Control response error for request a01aeb5a-215e-4e27-81ed-eb091d800615: Test error
+2026-02-18 20:48:56 [ERROR] [Query] Initialization error: Test error

@@ -1,0 +1,110 @@
+
+> @qwen-code/qwen-code@0.10.4 test
+> npm run test --workspaces --if-present --parallel
+
+
+> @qwen-code/qwen-code@0.10.4 test
+> vitest run
+
+sh: 1: vitest: not found
+npm error Lifecycle script `test` failed with error:
+npm error code 127
+npm error path /mnt/c/workspace/qwen-code/packages/cli
+npm error workspace @qwen-code/qwen-code@0.10.4
+npm error location /mnt/c/workspace/qwen-code/packages/cli
+npm error command failed
+npm error command sh -c vitest run
+
+
+> @qwen-code/qwen-code-core@0.10.4 test
+> vitest run
+
+sh: 1: vitest: not found
+npm error Lifecycle script `test` failed with error:
+npm error code 127
+npm error path /mnt/c/workspace/qwen-code/packages/core
+npm error workspace @qwen-code/qwen-code-core@0.10.4
+npm error location /mnt/c/workspace/qwen-code/packages/core
+npm error command failed
+npm error command sh -c vitest run
+
+
+> @qwen-code/sdk@0.1.4 test
+> vitest run
+
+node:internal/modules/esm/resolve:873
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'picocolors' imported from /mnt/c/workspace/qwen-code/packages/sdk-typescript/node_modules/vitest/dist/cli-wrapper.js
+    at packageResolve (node:internal/modules/esm/resolve:873:9)
+    at moduleResolve (node:internal/modules/esm/resolve:946:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+    at ModuleJob._link (node:internal/modules/esm/module_job:168:49) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.20.0
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /mnt/c/workspace/qwen-code/packages/sdk-typescript
+npm error workspace @qwen-code/sdk@0.1.4
+npm error location /mnt/c/workspace/qwen-code/packages/sdk-typescript
+npm error command failed
+npm error command sh -c vitest run
+
+
+> qwen-code-vscode-ide-companion@0.10.4 test
+> vitest run
+
+sh: 1: vitest: not found
+npm error Lifecycle script `test` failed with error:
+npm error code 127
+npm error path /mnt/c/workspace/qwen-code/packages/vscode-ide-companion
+npm error workspace qwen-code-vscode-ide-companion@0.10.4
+npm error location /mnt/c/workspace/qwen-code/packages/vscode-ide-companion
+npm error command failed
+npm error command sh -c vitest run
+
+
+> @qwen-code/mcp-meta-gateway@0.10.4 test
+> vitest run
+
+sh: 1: vitest: not found
+npm error Lifecycle script `test` failed with error:
+npm error code 127
+npm error path /mnt/c/workspace/qwen-code/mcp/meta-gateway
+npm error workspace @qwen-code/mcp-meta-gateway@0.10.4
+npm error location /mnt/c/workspace/qwen-code/mcp/meta-gateway
+npm error command failed
+npm error command sh -c vitest run
+
+
+> @qwen-code/mcp-oracle-tuner@0.10.4 test
+> vitest run
+
+sh: 1: vitest: not found
+npm error Lifecycle script `test` failed with error:
+npm error code 127
+npm error path /mnt/c/workspace/qwen-code/mcp/oracle-tuner
+npm error workspace @qwen-code/mcp-oracle-tuner@0.10.4
+npm error location /mnt/c/workspace/qwen-code/mcp/oracle-tuner
+npm error command failed
+npm error command sh -c vitest run
+
+
+> @qwen-code/mcp-shared@0.10.4 test
+> vitest run
+
+sh: 1: vitest: not found
+npm error Lifecycle script `test` failed with error:
+npm error code 127
+npm error path /mnt/c/workspace/qwen-code/mcp/shared
+npm error workspace @qwen-code/mcp-shared@0.10.4
+npm error location /mnt/c/workspace/qwen-code/mcp/shared
+npm error command failed
+npm error command sh -c vitest run
