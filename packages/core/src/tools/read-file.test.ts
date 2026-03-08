@@ -64,6 +64,14 @@ describe('ReadFileTool', () => {
       expect(typeof result).not.toBe('string');
     });
 
+    it('should accept path alias for absolute_path', () => {
+      const params = {
+        path: path.join(tempRootDir, 'test.txt'),
+      } as ReadFileToolParams;
+      const result = tool.build(params);
+      expect(typeof result).not.toBe('string');
+    });
+
     it('should throw error if file path is relative', () => {
       const params: ReadFileToolParams = {
         absolute_path: 'relative/path.txt',
@@ -126,6 +134,26 @@ describe('ReadFileTool', () => {
       };
       expect(() => tool.build(params)).toThrow(
         'Limit must be a positive number',
+      );
+    });
+
+    it('should accept numeric string offset and limit', () => {
+      const params = {
+        absolute_path: path.join(tempRootDir, 'test.txt'),
+        offset: '20',
+        limit: '50',
+      } as ReadFileToolParams;
+      const result = tool.build(params);
+      expect(typeof result).not.toBe('string');
+    });
+
+    it('should throw clear error for non-numeric string offset', () => {
+      const params = {
+        absolute_path: path.join(tempRootDir, 'test.txt'),
+        offset: 'abc',
+      } as ReadFileToolParams;
+      expect(() => tool.build(params)).toThrow(
+        'offset must be a non-negative number or numeric string',
       );
     });
   });

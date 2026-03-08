@@ -458,11 +458,11 @@ user: Refactor the auth logic in src/auth.py to use the requests library instead
 model: Okay, I can refactor 'src/auth.py'.
 First, I'll analyze the code and check for a test safety net before planning any changes.
 [tool_call: ${ToolNames.GLOB} for path 'tests/test_auth.py']
-[tool_call: ${ToolNames.READ_FILE} for path '/path/to/tests/test_auth.py' with offset 0 and limit 10]
+[tool_call: ${ToolNames.READ_FILE} for absolute_path '/path/to/tests/test_auth.py' with offset 0 and limit 10]
 (After analysis)
 Great, 'tests/test_auth.py' exists and covers the core authentication logic. With this safety net in place, I can safely plan the refactoring.
 I'll also confirm 'requests' is a dependency.
-[tool_call: ${ToolNames.READ_FILE} for path '/path/to/requirements.txt']
+[tool_call: ${ToolNames.READ_FILE} for absolute_path '/path/to/requirements.txt']
 (After analysis)
 Looks good, 'requests' is available.
 
@@ -489,9 +489,9 @@ model: I can run \`rm -rf /path/to/project/temp\`. This will permanently delete 
 user: Write tests for someFile.ts
 model:
 Okay, I can write those tests. First, I'll read someFile.ts to understand its functionality.
-[tool_call: ${ToolNames.READ_FILE} for path '/path/to/someFile.ts']
+[tool_call: ${ToolNames.READ_FILE} for absolute_path '/path/to/someFile.ts']
 Now I'll look for existing or related test files to understand current testing conventions and dependencies.
-[tool_call: ${ToolNames.READ_FILE} for path '/path/to/existingTest.test.ts']
+[tool_call: ${ToolNames.READ_FILE} for absolute_path '/path/to/existingTest.test.ts']
 (After reviewing existing tests and the file content)
 [tool_call: ${ToolNames.WRITE_FILE} for path '/path/to/someFile.test.ts']
 I've written the tests. Now I'll run the project's test command to verify them.
@@ -552,7 +552,7 @@ tests/test_auth.py
 </tool_call>
 <tool_call>
 <function=${ToolNames.READ_FILE}>
-<parameter=path>
+<parameter=absolute_path>
 /path/to/tests/test_auth.py
 </parameter>
 <parameter=offset>
@@ -568,7 +568,7 @@ Great, 'tests/test_auth.py' exists and covers the core authentication logic. Wit
 I'll also confirm 'requests' is a dependency.
 <tool_call>
 <function=${ToolNames.READ_FILE}>
-<parameter=path>
+<parameter=absolute_path>
 /path/to/requirements.txt
 </parameter>
 </function>
@@ -619,7 +619,7 @@ model:
 Okay, I can write those tests. First, I'll read someFile.ts to understand its functionality.
 <tool_call>
 <function=${ToolNames.READ_FILE}>
-<parameter=path>
+<parameter=absolute_path>
 /path/to/someFile.ts
 </parameter>
 </function>
@@ -627,7 +627,7 @@ Okay, I can write those tests. First, I'll read someFile.ts to understand its fu
 Now I'll look for existing or related test files to understand current testing conventions and dependencies.
 <tool_call>
 <function=${ToolNames.READ_FILE}>
-<parameter=path>
+<parameter=absolute_path>
 /path/to/existingTest.test.ts
 </parameter>
 </function>
@@ -697,13 +697,13 @@ First, I'll analyze the code and check for a test safety net before planning any
 {"name": "${ToolNames.GLOB}", "arguments": {"path": "tests/test_auth.py"}}
 </tool_call>
 <tool_call>
-{"name": "${ToolNames.READ_FILE}", "arguments": {"path": "/path/to/tests/test_auth.py", "offset": 0, "limit": 10}}
+{"name": "${ToolNames.READ_FILE}", "arguments": {"absolute_path": "/path/to/tests/test_auth.py", "offset": 0, "limit": 10}}
 </tool_call>
 (After analysis)
 Great, 'tests/test_auth.py' exists and covers the core authentication logic. With this safety net in place, I can safely plan the refactoring.
 I'll also confirm 'requests' is a dependency.
 <tool_call>
-{"name": "${ToolNames.READ_FILE}", "arguments": {"path": "/path/to/requirements.txt"}}
+{"name": "${ToolNames.READ_FILE}", "arguments": {"absolute_path": "/path/to/requirements.txt"}}
 </tool_call>
 (After analysis)
 Looks good, 'requests' is available.
@@ -736,11 +736,11 @@ user: Write tests for someFile.ts
 model:
 Okay, I can write those tests. First, I'll read someFile.ts to understand its functionality.
 <tool_call>
-{"name": "${ToolNames.READ_FILE}", "arguments": {"path": "/path/to/someFile.ts"}}
+{"name": "${ToolNames.READ_FILE}", "arguments": {"absolute_path": "/path/to/someFile.ts"}}
 </tool_call>
 Now I'll look for existing or related test files to understand current testing conventions and dependencies.
 <tool_call>
-{"name": "${ToolNames.READ_FILE}", "arguments": {"path": "/path/to/existingTest.test.ts"}}
+{"name": "${ToolNames.READ_FILE}", "arguments": {"absolute_path": "/path/to/existingTest.test.ts"}}
 </tool_call>
 (After reviewing existing tests and the file content)
 <tool_call>

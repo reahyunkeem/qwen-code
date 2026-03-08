@@ -29,17 +29,98 @@ export interface ReadFileToolParams {
   /**
    * The absolute path to the file to read
    */
-  absolute_path: string;
+  absolute_path?: string;
+
+  /**
+   * Backward-compatible alias for absolute_path
+   */
+  path?: string;
 
   /**
    * The line number to start reading from (optional)
    */
-  offset?: number;
+  offset?: number | string;
 
   /**
    * The number of lines to read (optional)
    */
+  limit?: number | string;
+}
+
+interface NormalizedReadFileToolParams {
+  absolute_path: string;
+  offset?: number;
   limit?: number;
+}
+
+function parseNumericParam(
+  value: number | string | undefined,
+  fieldName: 'offset' | 'limit',
+): { value?: number; error?: string } {
+  if (value === undefined) {
+    return {};
+  }
+
+  if (typeof value === 'number') {
+    return { value };
+  }
+
+  const trimmed = value.trim();
+  if (trimmed === '') {
+    return {
+      error: `${fieldName} must be a ${fieldName === 'offset' ? 'non-negative' : 'positive'} number or numeric string`,
+    };
+  }
+
+  const parsed = Number(trimmed);
+  if (Number.isNaN(parsed)) {
+    return {
+      error: `${fieldName} must be a ${fieldName === 'offset' ? 'non-negative' : 'positive'} number or numeric string`,
+    };
+  }
+
+  return { value: parsed };
+}
+
+function normalizeReadFileParams(params: ReadFileToolParams): {
+  normalized?: NormalizedReadFileToolParams;
+  error?: string;
+} {
+  const absolutePath =
+    typeof params.absolute_path === 'string' &&
+    params.absolute_path.trim() !== ''
+      ? params.absolute_path
+      : undefined;
+  const aliasPath =
+    typeof params.path === 'string' && params.path.trim() !== ''
+      ? params.path
+      : undefined;
+  const resolvedPath = absolutePath ?? aliasPath;
+
+  if (!resolvedPath) {
+    return {
+      error:
+        "The 'absolute_path' parameter must be non-empty. Did you mean to pass 'absolute_path'?",
+    };
+  }
+
+  const parsedOffset = parseNumericParam(params.offset, 'offset');
+  if (parsedOffset.error) {
+    return { error: parsedOffset.error };
+  }
+
+  const parsedLimit = parseNumericParam(params.limit, 'limit');
+  if (parsedLimit.error) {
+    return { error: parsedLimit.error };
+  }
+
+  return {
+    normalized: {
+      absolute_path: resolvedPath,
+      offset: parsedOffset.value,
+      limit: parsedLimit.value,
+    },
+  };
 }
 
 class ReadFileToolInvocation extends BaseToolInvocation<
@@ -48,19 +129,24 @@ class ReadFileToolInvocation extends BaseToolInvocation<
 > {
   constructor(
     private config: Config,
-    params: ReadFileToolParams,
+    params: NormalizedReadFileToolParams,
   ) {
     super(params);
   }
 
+  private get normalizedParams(): NormalizedReadFileToolParams {
+    return this.params as NormalizedReadFileToolParams;
+  }
+
   getDescription(): string {
+    const params = this.normalizedParams;
     const relativePath = makeRelative(
-      this.params.absolute_path,
+      params.absolute_path,
       this.config.getTargetDir(),
     );
     const shortPath = shortenPath(relativePath);
 
-    const { offset, limit } = this.params;
+    const { offset, limit } = params;
     if (offset !== undefined && limit !== undefined) {
       return `${shortPath} (lines ${offset + 1}-${offset + limit})`;
     } else if (offset !== undefined) {
@@ -73,15 +159,17 @@ class ReadFileToolInvocation extends BaseToolInvocation<
   }
 
   override toolLocations(): ToolLocation[] {
-    return [{ path: this.params.absolute_path, line: this.params.offset }];
+    const params = this.normalizedParams;
+    return [{ path: params.absolute_path, line: params.offset }];
   }
 
   async execute(): Promise<ToolResult> {
+    const params = this.normalizedParams;
     const result = await processSingleFileContent(
-      this.params.absolute_path,
+      params.absolute_path,
       this.config,
-      this.params.offset,
-      this.params.limit,
+      params.offset,
+      params.limit,
     );
 
     if (result.error) {
@@ -108,9 +196,9 @@ class ReadFileToolInvocation extends BaseToolInvocation<
       typeof result.llmContent === 'string'
         ? result.llmContent.split('\n').length
         : undefined;
-    const mimetype = getSpecificMimeType(this.params.absolute_path);
+    const mimetype = getSpecificMimeType(params.absolute_path);
     const programming_language = getProgrammingLanguage({
-      absolute_path: this.params.absolute_path,
+      absolute_path: params.absolute_path,
     });
     logFileOperation(
       this.config,
@@ -119,7 +207,7 @@ class ReadFileToolInvocation extends BaseToolInvocation<
         FileOperation.READ,
         lines,
         mimetype,
-        path.extname(this.params.absolute_path),
+        path.extname(params.absolute_path),
         programming_language,
       ),
     );
@@ -153,18 +241,22 @@ export class ReadFileTool extends BaseDeclarativeTool<
               "The absolute path to the file to read (e.g., '/home/user/project/file.txt'). Relative paths are not supported. You must provide an absolute path.",
             type: 'string',
           },
+          path: {
+            description:
+              "Backward-compatible alias for absolute_path. Prefer 'absolute_path'.",
+            type: 'string',
+          },
           offset: {
             description:
-              "Optional: For text files, the 0-based line number to start reading from. Requires 'limit' to be set. Use for paginating through large files.",
-            type: 'number',
+              "Optional: For text files, the 0-based line number to start reading from. Accepts number or numeric string. Requires 'limit' to be set. Use for paginating through large files.",
+            anyOf: [{ type: 'number' }, { type: 'string' }],
           },
           limit: {
             description:
-              "Optional: For text files, maximum number of lines to read. Use with 'offset' to paginate through large files. If omitted, reads the entire file (if feasible, up to a default limit).",
-            type: 'number',
+              "Optional: For text files, maximum number of lines to read. Accepts number or numeric string. Use with 'offset' to paginate through large files. If omitted, reads the entire file (if feasible, up to a default limit).",
+            anyOf: [{ type: 'number' }, { type: 'string' }],
           },
         },
-        required: ['absolute_path'],
         type: 'object',
       },
     );
@@ -173,10 +265,12 @@ export class ReadFileTool extends BaseDeclarativeTool<
   protected override validateToolParamValues(
     params: ReadFileToolParams,
   ): string | null {
-    const filePath = params.absolute_path;
-    if (params.absolute_path.trim() === '') {
-      return "The 'absolute_path' parameter must be non-empty.";
+    const normalization = normalizeReadFileParams(params);
+    if (!normalization.normalized) {
+      return normalization.error || 'Invalid read_file parameters';
     }
+    const normalized = normalization.normalized;
+    const filePath = normalized.absolute_path;
 
     if (!path.isAbsolute(filePath)) {
       return `File path must be absolute, but was relative: ${filePath}. You must provide an absolute path.`;
@@ -199,15 +293,15 @@ export class ReadFileTool extends BaseDeclarativeTool<
         ', ',
       )} or within the project temp directory: ${projectTempDir}`;
     }
-    if (params.offset !== undefined && params.offset < 0) {
+    if (normalized.offset !== undefined && normalized.offset < 0) {
       return 'Offset must be a non-negative number';
     }
-    if (params.limit !== undefined && params.limit <= 0) {
+    if (normalized.limit !== undefined && normalized.limit <= 0) {
       return 'Limit must be a positive number';
     }
 
     const fileService = this.config.getFileService();
-    if (fileService.shouldQwenIgnoreFile(params.absolute_path)) {
+    if (fileService.shouldQwenIgnoreFile(filePath)) {
       return `File path '${filePath}' is ignored by .qwenignore pattern(s).`;
     }
 
@@ -217,6 +311,11 @@ export class ReadFileTool extends BaseDeclarativeTool<
   protected createInvocation(
     params: ReadFileToolParams,
   ): ToolInvocation<ReadFileToolParams, ToolResult> {
-    return new ReadFileToolInvocation(this.config, params);
+    const normalization = normalizeReadFileParams(params);
+    if (!normalization.normalized) {
+      throw new Error(normalization.error || 'Invalid read_file parameters');
+    }
+
+    return new ReadFileToolInvocation(this.config, normalization.normalized);
   }
 }
