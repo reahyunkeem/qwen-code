@@ -22,6 +22,8 @@ export type AvailableModel = {
 export const MAINLINE_VLM = 'vision-model';
 export const MAINLINE_CODER = DEFAULT_QWEN_MODEL;
 
+const QWEN_3_6_MODEL_PATTERN = /qwen[-_ /]*3[._-]6/i;
+
 export const AVAILABLE_MODELS_QWEN: AvailableModel[] = [
   {
     id: MAINLINE_CODER,
@@ -69,6 +71,7 @@ export function getOpenAIAvailableModelFromEnv(): AvailableModel | null {
         get description() {
           return t('Configured via OPENAI_MODEL environment variable');
         },
+        isVision: isQwen36VisionModel(id),
       }
     : null;
 }
@@ -155,8 +158,15 @@ export function getDefaultVisionModel(): string {
   return MAINLINE_VLM;
 }
 
+export function isQwen36VisionModel(modelId: string): boolean {
+  return QWEN_3_6_MODEL_PATTERN.test(modelId);
+}
+
 export function isVisionModel(modelId: string): boolean {
-  return AVAILABLE_MODELS_QWEN.some(
-    (model) => model.id === modelId && model.isVision,
+  return (
+    isQwen36VisionModel(modelId) ||
+    AVAILABLE_MODELS_QWEN.some(
+      (model) => model.id === modelId && model.isVision,
+    )
   );
 }

@@ -167,6 +167,19 @@ describe('useVisionAutoSwitch helpers', () => {
       expect(result).toBe(false);
     });
 
+    it('returns false when current model is qwen3.6', () => {
+      const parts: PartListUnion = [
+        { inlineData: { mimeType: 'image/png', data: '...' } },
+      ];
+      const result = shouldOfferVisionSwitch(
+        parts,
+        AuthType.QWEN_OAUTH,
+        'Qwen/Qwen3.6-27B',
+        true,
+      );
+      expect(result).toBe(false);
+    });
+
     it('returns false when authType is not QWEN_OAUTH in YOLO mode context', () => {
       const parts: PartListUnion = [
         { inlineData: { mimeType: 'image/png', data: '...' } },

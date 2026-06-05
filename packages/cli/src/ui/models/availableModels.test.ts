@@ -10,6 +10,7 @@ import {
   getFilteredQwenModels,
   getOpenAIAvailableModelFromEnv,
   isVisionModel,
+  isQwen36VisionModel,
   getDefaultVisionModel,
   AVAILABLE_MODELS_QWEN,
   MAINLINE_VLM,
@@ -75,6 +76,13 @@ describe('availableModels', () => {
       process.env['OPENAI_MODEL'] = '  gpt-4  ';
       const model = getOpenAIAvailableModelFromEnv();
       expect(model?.id).toBe('gpt-4');
+    });
+
+    it('should mark qwen3.6 env models as vision models', () => {
+      process.env['OPENAI_MODEL'] = 'Qwen/Qwen3.6-27B';
+      const model = getOpenAIAvailableModelFromEnv();
+      expect(model?.id).toBe('Qwen/Qwen3.6-27B');
+      expect(model?.isVision).toBe(true);
     });
   });
 
@@ -183,6 +191,18 @@ describe('availableModels', () => {
     });
   });
 
+  describe('isQwen36VisionModel', () => {
+    it('should return true for qwen3.6 aliases', () => {
+      expect(isQwen36VisionModel('qwen3.6-27b')).toBe(true);
+      expect(isQwen36VisionModel('Qwen/Qwen3.6-27B')).toBe(true);
+      expect(isQwen36VisionModel('qwen-3_6-local')).toBe(true);
+    });
+
+    it('should return false for qwen3 coder models', () => {
+      expect(isQwen36VisionModel('qwen3-coder-plus')).toBe(false);
+    });
+  });
+
   describe('isVisionModel', () => {
     it('should return true for vision model', () => {
       expect(isVisionModel(MAINLINE_VLM)).toBe(true);
@@ -190,6 +210,10 @@ describe('availableModels', () => {
 
     it('should return false for non-vision model', () => {
       expect(isVisionModel(MAINLINE_CODER)).toBe(false);
+    });
+
+    it('should return true for qwen3.6 model names', () => {
+      expect(isVisionModel('qwen3.6-27b')).toBe(true);
     });
 
     it('should return false for unknown model', () => {
