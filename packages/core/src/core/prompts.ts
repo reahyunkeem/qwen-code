@@ -13,6 +13,11 @@ import { isGitRepository } from '../utils/gitUtils.js';
 import { QWEN_CONFIG_DIR } from '../tools/memoryTool.js';
 import type { GenerateContentConfig } from '@google/genai';
 import { createDebugLogger } from '../utils/debugLogger.js';
+import type { ModelCapabilities } from './contentGenerator.js';
+import {
+  getConfiguredToolCallStyle,
+  isVisionCapableModel,
+} from '../models/capabilities.js';
 
 const debugLogger = createDebugLogger('PROMPTS');
 
@@ -111,6 +116,7 @@ export function getCustomSystemPrompt(
 export function getCoreSystemPrompt(
   userMemory?: string,
   model?: string,
+  capabilities?: ModelCapabilities,
 ): string {
   // if QWEN_SYSTEM_MD is set (and not 0|false), override system prompt from file
   // default path is .qwen/system.md but can be modified via custom path in QWEN_SYSTEM_MD
@@ -311,7 +317,7 @@ ${(function () {
   return '';
 })()}
 
-${getToolCallExamples(model || '')}
+${getToolCallExamples(model || '', capabilities)}
 
 # Final Reminder
 Your core function is efficient and safe assistance. Balance extreme conciseness with the crucial need for clarity, especially regarding safety and potential system modifications. Always prioritize user control and project conventions. Never make assumptions about the contents of files; instead use '${ToolNames.READ_FILE}' to ensure you aren't making broad assumptions. Finally, you are an agent - please keep going until the user's query is completely resolved.
@@ -768,7 +774,10 @@ To help you check their settings, I can read their contents. Which one would you
 </example>
 `.trim();
 
-function getToolCallExamples(model?: string): string {
+function getToolCallExamples(
+  model?: string,
+  capabilities?: ModelCapabilities,
+): string {
   // Check for environment variable override first
   const toolCallStyle = process.env['QWEN_CODE_TOOL_CALL_STYLE'];
   if (toolCallStyle) {
@@ -785,6 +794,24 @@ function getToolCallExamples(model?: string): string {
         );
         break;
     }
+  }
+
+  const configuredToolCallStyle = getConfiguredToolCallStyle(capabilities);
+  if (configuredToolCallStyle) {
+    switch (configuredToolCallStyle) {
+      case 'qwen-coder':
+        return qwenCoderToolCallExamples;
+      case 'qwen-vl':
+        return qwenVlToolCallExamples;
+      case 'general':
+        return generalToolCallExamples;
+      default:
+        break;
+    }
+  }
+
+  if (isVisionCapableModel({ model, capabilities })) {
+    return qwenVlToolCallExamples;
   }
 
   // Enhanced regex-based model detection

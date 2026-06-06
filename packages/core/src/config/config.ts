@@ -953,6 +953,7 @@ export class Config {
       this.contentGeneratorConfig.contextWindowSize = config.contextWindowSize;
       this.contentGeneratorConfig.enableCacheControl =
         config.enableCacheControl;
+      this.contentGeneratorConfig.capabilities = config.capabilities;
 
       if ('model' in sources) {
         this.contentGeneratorConfigSources['model'] = sources['model'];
@@ -968,6 +969,10 @@ export class Config {
       if ('contextWindowSize' in sources) {
         this.contentGeneratorConfigSources['contextWindowSize'] =
           sources['contextWindowSize'];
+      }
+      if ('capabilities' in sources) {
+        this.contentGeneratorConfigSources['capabilities'] =
+          sources['capabilities'];
       }
       return;
     }

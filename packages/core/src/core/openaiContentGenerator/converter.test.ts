@@ -115,6 +115,105 @@ describe('OpenAIContentConverter', () => {
       };
     };
 
+    it('should convert user text-only input to a text content part', () => {
+      const request: GenerateContentParameters = {
+        model: 'models/test',
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: 'Explain this codebase.' }],
+          },
+        ],
+      };
+
+      const messages = converter.convertGeminiRequestToOpenAI(request);
+
+      expect(messages).toHaveLength(1);
+      expect(messages[0].role).toBe('user');
+      expect(Array.isArray(messages[0].content)).toBe(true);
+      const contentArray = messages[0].content as Array<{
+        type: string;
+        text?: string;
+      }>;
+      expect(contentArray).toEqual([
+        { type: 'text', text: 'Explain this codebase.' },
+      ]);
+    });
+
+    it('should convert user image-only input to an image_url content part', () => {
+      const request: GenerateContentParameters = {
+        model: 'models/test',
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                inlineData: {
+                  mimeType: 'image/png',
+                  data: 'base64imagedata',
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const messages = converter.convertGeminiRequestToOpenAI(request);
+
+      expect(messages).toHaveLength(1);
+      expect(messages[0].role).toBe('user');
+      expect(Array.isArray(messages[0].content)).toBe(true);
+      const contentArray = messages[0].content as Array<{
+        type: string;
+        image_url?: { url: string };
+      }>;
+      expect(contentArray).toHaveLength(1);
+      expect(contentArray[0].type).toBe('image_url');
+      expect(contentArray[0].image_url?.url).toBe(
+        'data:image/png;base64,base64imagedata',
+      );
+    });
+
+    it('should preserve user text and image input order', () => {
+      const request: GenerateContentParameters = {
+        model: 'models/test',
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: 'What is shown here?' },
+              {
+                inlineData: {
+                  mimeType: 'image/jpeg',
+                  data: 'jpegbase64',
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const messages = converter.convertGeminiRequestToOpenAI(request);
+
+      expect(messages).toHaveLength(1);
+      expect(messages[0].role).toBe('user');
+      expect(Array.isArray(messages[0].content)).toBe(true);
+      const contentArray = messages[0].content as Array<{
+        type: string;
+        text?: string;
+        image_url?: { url: string };
+      }>;
+      expect(contentArray).toHaveLength(2);
+      expect(contentArray[0]).toEqual({
+        type: 'text',
+        text: 'What is shown here?',
+      });
+      expect(contentArray[1].type).toBe('image_url');
+      expect(contentArray[1].image_url?.url).toBe(
+        'data:image/jpeg;base64,jpegbase64',
+      );
+    });
+
     it('should extract raw output from function response objects', () => {
       const request = createRequestWithFunctionResponse({
         output: 'Raw output text',
@@ -1005,6 +1104,47 @@ describe('OpenAIContentConverter', () => {
       // No user message should be created
       const userMessages = messages.filter((m) => m.role === 'user');
       expect(userMessages).toHaveLength(0);
+    });
+
+    it('should not send image_url when image media is not allowed', () => {
+      const imageDisabledConverter = new OpenAIContentConverter(
+        'text-only-model',
+        'auto',
+        { vision: false, media: [] },
+      );
+      const request: GenerateContentParameters = {
+        model: 'models/test',
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: 'Describe this image' },
+              {
+                inlineData: {
+                  mimeType: 'image/png',
+                  data: 'base64imagedata',
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const messages =
+        imageDisabledConverter.convertGeminiRequestToOpenAI(request);
+
+      const userMessage = messages.find((m) => m.role === 'user');
+      expect(Array.isArray(userMessage?.content)).toBe(true);
+      const contentArray = userMessage?.content as Array<{
+        type: string;
+        text?: string;
+      }>;
+      expect(contentArray.some((part) => part.type === 'image_url')).toBe(
+        false,
+      );
+      expect(contentArray[1].text).toContain(
+        'not configured to accept image input',
+      );
     });
   });
 

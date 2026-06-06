@@ -60,6 +60,19 @@ export enum AuthType {
   USE_ANTHROPIC = 'anthropic',
 }
 
+export type ModelMediaCapability = 'image' | 'pdf' | 'audio' | 'video';
+
+export type ModelToolCallStyle = 'general' | 'qwen-coder' | 'qwen-vl';
+
+export interface ModelCapabilities {
+  /** Supports image/vision inputs. */
+  vision?: boolean;
+  /** Media types accepted by the provider/model. Omit to preserve legacy behavior. */
+  media?: ModelMediaCapability[];
+  /** Preferred tool-call prompt style for models that need model-specific examples. */
+  toolCallStyle?: ModelToolCallStyle;
+}
+
 export type ContentGeneratorConfig = {
   model: string;
   apiKey?: string;
@@ -98,6 +111,8 @@ export type ContentGeneratorConfig = {
   customHeaders?: Record<string, string>;
   // Extra body parameters to be merged into the request body
   extra_body?: Record<string, unknown>;
+  // Model capabilities resolved from modelProviders/settings.
+  capabilities?: ModelCapabilities;
 };
 
 // Keep the public ContentGeneratorConfigSources API, but reuse the generic

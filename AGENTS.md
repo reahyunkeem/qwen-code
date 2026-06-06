@@ -1,149 +1,162 @@
-# Agent Guide for qwen-code
+# AGENTS Guide for qwen-code
 
-This file is for coding agents working in this repository. It summarizes the
-expected commands and style rules derived from the codebase configuration.
+This guide is for autonomous/agentic coding tools working in this repository.
+It captures practical commands and coding rules from project configuration.
 
 ## Quick facts
 
-- Runtime: Node.js >= 20 (see `package.json`).
-- Language: TypeScript (strict) across workspaces.
-- Monorepo: npm workspaces under `packages/*`.
-- Primary build output: `dist/` and `bundle/` (do not edit directly).
+- Node.js: `>=20`.
+- Package manager: `npm` (workspace repo).
+- Language: strict TypeScript across packages.
+- Workspaces: `packages/*` and `mcp/*`.
+- Main generated outputs: `dist/`, `bundle/`, `package/bundle/` (do not edit).
 
-## Repo layout (high level)
+## Repository map
 
-- `packages/cli`: main CLI implementation.
-- `packages/core`: shared core logic.
-- `packages/sdk-typescript`: SDK for external consumers.
+- `packages/cli`: main CLI app.
+- `packages/core`: shared runtime/core logic.
+- `packages/sdk-typescript`: public TypeScript SDK.
 - `packages/vscode-ide-companion`: VS Code integration.
-- `integration-tests`: vitest-driven integration tests.
-- `docs-site`: documentation site (relaxed lint rules).
+- `packages/webui`: UI components/web surfaces.
+- `integration-tests`: integration and terminal bench tests.
+- `scripts`: build/lint/release helper scripts + tests.
 
-## Build commands (repo root)
+## Build commands (root)
 
-- `npm run build`: build packages (scripts/build.js).
+- `npm run build`: primary build via `scripts/build.js`.
 - `npm run build:packages`: build all workspaces.
-- `npm run build:all`: build + sandbox + VS Code companion.
-- `npm run build:sandbox`: build sandbox image assets.
-- `npm run build:vscode`: build VS Code companion extension.
-- `npm run bundle`: generate git info + esbuild bundle + copy assets.
+- `npm run build:sandbox`: build sandbox assets.
+- `npm run build:vscode`: build VS Code companion.
+- `npm run build:all`: build + sandbox + VS Code.
+- `npm run bundle`: generate metadata + esbuild + copy bundle assets.
 
 ## Lint, format, typecheck
 
-- `npm run lint`: eslint on repo + integration tests.
-- `npm run lint:fix`: eslint with fixes.
-- `npm run lint:ci`: eslint with max warnings 0.
-- `npm run lint:all`: lint via scripts/lint.js (full sweep).
+- `npm run lint`: eslint for repo + integration tests.
+- `npm run lint:fix`: same with autofix.
+- `npm run lint:ci`: lint with `--max-warnings 0`.
+- `npm run lint:all`: full lint sweep via script.
 - `npm run format`: prettier write across repo.
-- `npm run typecheck`: `tsc --noEmit` across workspaces.
+- `npm run typecheck`: typecheck all workspaces (`tsc --noEmit` via scripts).
 
-## Tests (vitest)
+## Test commands
 
-- `npm run test`: run each workspace test (parallel, if present).
+- `npm run test`: run workspace tests in parallel.
 - `npm run test:ci`: workspace tests + scripts tests.
-- `npm run test:scripts`: vitest for `scripts/tests`.
+- `npm run test:scripts`: tests in `scripts/tests`.
 - `npm run test:integration:sandbox:none`: integration tests (no sandbox).
-- `npm run test:integration:sandbox:docker`: integration tests + docker sandbox.
-- `npm run test:integration:sandbox:podman`: integration tests + podman sandbox.
-- `npm run test:integration:sdk:sandbox:none`: integration tests for SDK only.
+- `npm run test:integration:sandbox:docker`: integration tests with docker sandbox.
+- `npm run test:integration:sandbox:podman`: integration tests with podman sandbox.
+- `npm run test:integration:sdk:sandbox:none`: integration tests for SDK subset.
 - `npm run test:integration:cli:sandbox:none`: integration tests excluding SDK.
-- `npm run test:terminal-bench`: terminal-bench suite.
-- `npm run test:terminal-bench:oracle`: terminal-bench oracle filter.
-- `npm run test:terminal-bench:qwen`: terminal-bench qwen filter.
+- `npm run test:terminal-bench`: terminal benchmark suite.
+- `npm run test:terminal-bench:oracle`: terminal bench filtered by `oracle`.
+- `npm run test:terminal-bench:qwen`: terminal bench filtered by `qwen`.
 
-## Run a single test
+## Running a single test (important)
 
-Vitest accepts extra args after `--`.
+Vitest args pass through after `--`.
 
-- Workspace test file:
-  - `npm run test --workspace=packages/cli -- path/to/file.test.ts`
-- Workspace test name:
-  - `npm run test --workspace=packages/cli -- -t "test name"`
-- Integration test file:
+- Single test file in a workspace:
+  - `npm run test --workspace=packages/cli -- src/path/to/file.test.ts`
+- Single test name in a workspace:
+  - `npm run test --workspace=packages/cli -- -t "name of test"`
+- Single integration test file:
   - `npm run test:integration:sandbox:none -- path/to/test.test.ts`
-- Integration test name:
-  - `npm run test:integration:sandbox:none -- -t "test name"`
-- Scripts test name:
-  - `npm run test:scripts -- -t "test name"`
+- Single integration test by name:
+  - `npm run test:integration:sandbox:none -- -t "name of test"`
+- Single scripts test by name:
+  - `npm run test:scripts -- -t "name of test"`
 
-## Formatting (Prettier)
+## Pre-commit and safety checks
 
-Configured in `.prettierrc.json`:
+- `npm run pre-commit`: repository pre-commit checks.
+- `lint-staged` runs:
+  - `prettier --write` on staged supported files.
+  - `eslint --fix --max-warnings 0` on staged JS/TS files.
 
-- Semicolons required.
-- Single quotes.
-- Trailing commas always.
-- Print width 80, tab width 2.
+## Formatting rules (Prettier)
 
-## TypeScript settings (tsconfig.json)
+From `.prettierrc.json`:
 
-- `strict: true` with `noImplicitAny`, `noImplicitReturns`, `noUnusedLocals`.
-- `noImplicitOverride` and `noPropertyAccessFromIndexSignature` enabled.
-- `module: NodeNext`, `moduleResolution: nodenext`, `verbatimModuleSyntax: true`.
-- ES2023 libs, target ES2022, `jsx: react-jsx`.
+- `semi: true`.
+- `singleQuote: true`.
+- `trailingComma: "all"`.
+- `printWidth: 80`.
+- `tabWidth: 2`.
 
-## Imports
+## TypeScript rules (tsconfig)
 
-- ES module syntax only (`import` / `export`).
-- Prefer type-only imports when possible.
-- No relative package imports (`import/no-relative-packages`).
-- Avoid deep internal imports except allow list (e.g., `msw/node`,
-  `react-dom/test-utils`, `**/generated/**`).
-- In `packages/cli`, default exports are discouraged (`import/no-default-export`).
+- `strict: true` and `noImplicitAny: true`.
+- `noImplicitReturns`, `noImplicitOverride`, `noUnusedLocals` enabled.
+- `noPropertyAccessFromIndexSignature: true`.
+- `module: "NodeNext"`, `moduleResolution: "nodenext"`.
+- `target: "es2022"`, `lib: ["ES2023"]`.
+- `verbatimModuleSyntax: true`.
+- JSX mode: `react-jsx`.
 
-## ESLint expectations (high level)
+## Import and module conventions
 
-- No `any` (`@typescript-eslint/no-explicit-any`).
-- No `require()` (use ES imports).
-- Use `as` for type assertions.
-- Prefer `T[]` over `Array<T>` for simple types.
-- `eqeqeq` enforced (allow `== null`).
-- One var per declaration; prefer `const`, no `var`.
-- No unused vars (prefix intentionally unused with `_`).
-- No string throws; throw `new Error('message')`.
-- Prefer arrow callbacks and object shorthand.
-- React: `prop-types` disabled; JSX runtime enabled.
+- Use ESM imports/exports only.
+- Prefer `import type` for type-only imports.
+- Do not use `require()` in TS/TSX code.
+- Avoid relative package imports (`import/no-relative-packages`).
+- Avoid deep internal imports except existing allowlisted paths.
+- In `packages/cli`, prefer named exports; default export is discouraged.
+
+## ESLint expectations (high signal subset)
+
+- No explicit `any`.
+- Use `as` style assertions when needed.
+- Prefer `T[]` over `Array<T>` for simple array types.
+- Enforce strict equality (`eqeqeq`), with `== null` exception.
+- Prefer `const`; never use `var`; one declaration per statement.
+- Prefix intentionally unused variables/args with `_`.
+- Do not throw strings; throw `new Error('message')`.
+- Prefer object shorthand and arrow callbacks.
+- `no-console` is generally on, with package/file allowlists.
 
 ## Naming conventions
 
-- Files: `kebab-case` for folders and non-React files.
-- React components: `PascalCase` when that folder uses it.
-- Types/interfaces/classes: `PascalCase`.
-- Variables/functions: `camelCase`.
-- Constants: `UPPER_SNAKE_CASE` for true constants.
-- Tests: `*.test.ts` or `*.test.tsx`.
+- Files/folders: `kebab-case` (except React component files where applicable).
+- React component files: `PascalCase` in component-oriented folders.
+- Types/interfaces/classes/enums: `PascalCase`.
+- Variables/functions/methods: `camelCase`.
+- True constants: `UPPER_SNAKE_CASE`.
+- Tests: `*.test.ts` / `*.test.tsx`.
 
-## Error handling
+## Error handling and control flow
 
-- Throw `Error` objects with clear context (module or operation).
-- Use early returns for guard clauses; avoid deep nesting.
+- Throw `Error` instances with actionable messages.
+- Include operation context in error text (what failed and where).
+- Favor early returns and guard clauses over deep nesting.
+- Keep async logic explicit; avoid hidden Promise chains where clarity suffers.
 
-## Code structure
+## Code structure guidance
 
-- Prefer small, focused modules with explicit exports.
-- Keep async flows explicit; use `await` in logic.
-- Favor pure functions; isolate side effects.
+- Keep modules focused and composable.
+- Prefer pure helpers; isolate side effects in thin boundaries.
+- Keep public exports explicit.
+- Do not edit generated outputs (`dist`, `bundle`, generated assets) directly.
 
 ## Testing guidance
 
-- Use `vitest` and `@testing-library` for UI.
-- Clear arrange/act/assert sections.
-- Avoid shared mutable state.
+- Framework: Vitest (and `@testing-library` for UI behavior).
+- Use clear arrange/act/assert structure.
+- Minimize shared mutable test state.
+- Prefer targeted tests first, then broader suite if needed.
 
-## Tooling hooks
+## Agent workflow checklist
 
-- `npm run pre-commit` runs repo checks.
-- lint-staged runs `prettier --write` and `eslint --fix --max-warnings 0`.
+1. Read relevant files and nearby tests before editing.
+2. Make minimal, scoped changes consistent with existing style.
+3. Run targeted tests for changed area.
+4. Run `npm run lint` and `npm run typecheck` for broad changes.
 
-## Cursor / Copilot rules
+## Cursor and Copilot policy files
 
-- No `.cursor/rules`, `.cursorrules`, or `.github/copilot-instructions.md`
-  found in this repository at the time of writing.
-
-## Practical workflow
-
-1. Install deps: `npm ci` (or `npm install`).
-2. Make changes in `packages/*`.
-3. Run `npm run format` and `npm run lint`.
-4. Run targeted tests (single test or workspace).
-5. Run `npm run typecheck` if changes affect types.
+- Checked paths:
+  - `.cursor/rules/`
+  - `.cursorrules`
+  - `.github/copilot-instructions.md`
+- Current status: none of the above files exist in this repository.

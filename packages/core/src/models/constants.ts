@@ -28,6 +28,7 @@ export const MODEL_GENERATION_CONFIG_FIELDS = [
   'contextWindowSize',
   'customHeaders',
   'extra_body',
+  'capabilities',
 ] as const satisfies ReadonlyArray<keyof ContentGeneratorConfig>;
 
 /**

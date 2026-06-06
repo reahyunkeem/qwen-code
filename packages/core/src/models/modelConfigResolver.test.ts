@@ -127,6 +127,34 @@ describe('modelConfigResolver', () => {
         expect(result.sources['apiKey'].via?.kind).toBe('modelProviders');
       });
 
+      it('resolves modelProvider capabilities into content generator config', () => {
+        const result = resolveModelConfig({
+          authType: AuthType.USE_OPENAI,
+          cli: {},
+          settings: {},
+          env: {
+            MY_CUSTOM_KEY: 'provider-key',
+          },
+          modelProvider: {
+            id: 'qwen3.6-27b-vllm',
+            envKey: 'MY_CUSTOM_KEY',
+            baseUrl: 'https://vllm.company.local/v1',
+            capabilities: {
+              vision: true,
+              media: ['image'],
+              toolCallStyle: 'qwen-vl',
+            },
+          },
+        });
+
+        expect(result.config.capabilities).toEqual({
+          vision: true,
+          media: ['image'],
+          toolCallStyle: 'qwen-vl',
+        });
+        expect(result.sources['capabilities'].kind).toBe('modelProviders');
+      });
+
       it('reads QWEN_MODEL as fallback for OPENAI_MODEL', () => {
         const result = resolveModelConfig({
           authType: AuthType.USE_OPENAI,

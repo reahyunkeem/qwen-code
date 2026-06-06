@@ -25,6 +25,8 @@ import {
   convertSchema,
   type SchemaComplianceMode,
 } from '../../utils/schemaConverter.js';
+import type { ModelCapabilities } from '../contentGenerator.js';
+import { isMediaTypeAllowed } from '../../models/capabilities.js';
 
 /**
  * Extended usage type that supports both OpenAI standard format and alternative formats
@@ -92,12 +94,18 @@ type OpenAIContentPart =
 export class OpenAIContentConverter {
   private model: string;
   private schemaCompliance: SchemaComplianceMode;
+  private capabilities?: ModelCapabilities;
   private streamingToolCallParser: StreamingToolCallParser =
     new StreamingToolCallParser();
 
-  constructor(model: string, schemaCompliance: SchemaComplianceMode = 'auto') {
+  constructor(
+    model: string,
+    schemaCompliance: SchemaComplianceMode = 'auto',
+    capabilities?: ModelCapabilities,
+  ) {
     this.model = model;
     this.schemaCompliance = schemaCompliance;
+    this.capabilities = capabilities;
   }
 
   /**
@@ -106,6 +114,10 @@ export class OpenAIContentConverter {
    */
   setModel(model: string): void {
     this.model = model;
+  }
+
+  setCapabilities(capabilities?: ModelCapabilities): void {
+    this.capabilities = capabilities;
   }
 
   /**
@@ -592,6 +604,9 @@ export class OpenAIContentConverter {
       const mimeType = part.inlineData.mimeType;
       const mediaType = this.getMediaType(mimeType);
       if (mediaType === 'image') {
+        if (!isMediaTypeAllowed(this.capabilities, 'image')) {
+          return this.createUnsupportedMediaText('image', mimeType);
+        }
         const dataUrl = `data:${mimeType};base64,${part.inlineData.data}`;
         return {
           type: 'image_url' as const,
@@ -600,6 +615,9 @@ export class OpenAIContentConverter {
       }
 
       if (mimeType === 'application/pdf') {
+        if (!isMediaTypeAllowed(this.capabilities, 'pdf')) {
+          return this.createUnsupportedMediaText('pdf', mimeType);
+        }
         const filename = part.inlineData.displayName || 'document.pdf';
         return {
           type: 'file' as const,
@@ -611,6 +629,9 @@ export class OpenAIContentConverter {
       }
 
       if (mediaType === 'audio') {
+        if (!isMediaTypeAllowed(this.capabilities, 'audio')) {
+          return this.createUnsupportedMediaText('audio', mimeType);
+        }
         const format = this.getAudioFormat(mimeType);
         if (format) {
           return {
@@ -624,6 +645,9 @@ export class OpenAIContentConverter {
       }
 
       if (mediaType === 'video') {
+        if (!isMediaTypeAllowed(this.capabilities, 'video')) {
+          return this.createUnsupportedMediaText('video', mimeType);
+        }
         return {
           type: 'video_url' as const,
           video_url: {
@@ -648,6 +672,9 @@ export class OpenAIContentConverter {
       const mediaType = this.getMediaType(mimeType);
 
       if (mediaType === 'image') {
+        if (!isMediaTypeAllowed(this.capabilities, 'image')) {
+          return this.createUnsupportedMediaText('image', mimeType);
+        }
         return {
           type: 'image_url' as const,
           image_url: { url: fileUri },
@@ -655,6 +682,9 @@ export class OpenAIContentConverter {
       }
 
       if (mimeType === 'application/pdf') {
+        if (!isMediaTypeAllowed(this.capabilities, 'pdf')) {
+          return this.createUnsupportedMediaText('pdf', mimeType);
+        }
         return {
           type: 'file' as const,
           file: {
@@ -665,6 +695,9 @@ export class OpenAIContentConverter {
       }
 
       if (mediaType === 'video') {
+        if (!isMediaTypeAllowed(this.capabilities, 'video')) {
+          return this.createUnsupportedMediaText('video', mimeType);
+        }
         return {
           type: 'video_url' as const,
           video_url: {
@@ -683,6 +716,16 @@ export class OpenAIContentConverter {
     }
 
     return null;
+  }
+
+  private createUnsupportedMediaText(
+    mediaType: string,
+    mimeType: string,
+  ): OpenAI.Chat.ChatCompletionContentPartText {
+    return {
+      type: 'text',
+      text: `The selected model is not configured to accept ${mediaType} input (${mimeType}).`,
+    };
   }
 
   /**

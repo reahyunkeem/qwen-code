@@ -7,16 +7,11 @@
 import type {
   AuthType,
   ContentGeneratorConfig,
+  ModelCapabilities,
 } from '../core/contentGenerator.js';
 import type { ConfigSources } from '../utils/configResolver.js';
 
-/**
- * Model capabilities configuration
- */
-export interface ModelCapabilities {
-  /** Supports image/vision inputs */
-  vision?: boolean;
-}
+export type { ModelCapabilities } from '../core/contentGenerator.js';
 
 /**
  * Model-scoped generation configuration.
@@ -35,6 +30,7 @@ export type ModelGenerationConfig = Pick<
   | 'customHeaders'
   | 'extra_body'
   | 'contextWindowSize'
+  | 'capabilities'
 >;
 
 /**
@@ -51,7 +47,7 @@ export interface ModelConfig {
   envKey?: string;
   /** API endpoint override */
   baseUrl?: string;
-  /** Model capabilities, reserve for future use. Now we do not read this to determine multi-modal support or other capabilities. */
+  /** Model capabilities used to determine multimodal and prompt behavior. */
   capabilities?: ModelCapabilities;
   /** Generation configuration (sampling parameters) */
   generationConfig?: ModelGenerationConfig;

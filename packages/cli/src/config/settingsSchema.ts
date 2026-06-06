@@ -687,6 +687,23 @@ const SETTINGS_SCHEMA = {
             parentKey: 'generationConfig',
             showInDialog: false,
           },
+          capabilities: {
+            type: 'object',
+            label: 'Model Capabilities',
+            category: 'Generation Configuration',
+            requiresRestart: false,
+            default: undefined as
+              | {
+                  vision?: boolean;
+                  media?: Array<'image' | 'pdf' | 'audio' | 'video'>;
+                  toolCallStyle?: 'general' | 'qwen-coder' | 'qwen-vl';
+                }
+              | undefined,
+            description:
+              'Declares model capabilities such as vision input support and preferred tool-call prompt style for OpenAI-compatible/custom providers.',
+            parentKey: 'generationConfig',
+            showInDialog: false,
+          },
         },
       },
     },

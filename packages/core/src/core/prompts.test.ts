@@ -317,6 +317,20 @@ describe('Model-specific tool call formats', () => {
     expect(prompt).toMatchSnapshot();
   });
 
+  it('should use JSON format when capabilities request qwen-vl tool calls', () => {
+    vi.mocked(isGitRepository).mockReturnValue(false);
+    const prompt = getCoreSystemPrompt(undefined, 'qwen3.6-27b-vllm', {
+      vision: true,
+      media: ['image'],
+      toolCallStyle: 'qwen-vl',
+    });
+
+    expect(prompt).toContain('<tool_call>');
+    expect(prompt).toContain('{"name": "run_shell_command"');
+    expect(prompt).not.toContain('<function=run_shell_command>');
+    expect(prompt).not.toContain('[tool_call: run_shell_command for');
+  });
+
   it('should use bracket format for generic models', () => {
     vi.mocked(isGitRepository).mockReturnValue(false);
     const prompt = getCoreSystemPrompt(undefined, 'gpt-4');

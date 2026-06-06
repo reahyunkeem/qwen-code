@@ -169,13 +169,19 @@ export class ModelRegistry {
   ): ResolvedModelConfig {
     this.validateModelConfig(config, authType);
 
+    const capabilities =
+      config.generationConfig?.capabilities ?? config.capabilities ?? {};
+
     return {
       ...config,
       authType,
       name: config.name || config.id,
       baseUrl: config.baseUrl || this.getDefaultBaseUrl(authType),
-      generationConfig: config.generationConfig ?? {},
-      capabilities: config.capabilities || {},
+      generationConfig: {
+        ...(config.generationConfig ?? {}),
+        capabilities,
+      },
+      capabilities,
     };
   }
 

@@ -246,6 +246,18 @@ export function resolveModelConfig(
     modelProvider?.id,
     sources,
   );
+  if (
+    authType &&
+    modelProvider?.capabilities &&
+    generationConfig.capabilities === undefined
+  ) {
+    generationConfig.capabilities = modelProvider.capabilities;
+    sources['capabilities'] = modelProvidersSource(
+      authType,
+      modelProvider.id,
+      'capabilities',
+    );
+  }
 
   // Build final config
   const config: ContentGeneratorConfig = {
@@ -319,6 +331,17 @@ function resolveQwenOAuthConfig(
     resolvedModel,
     sources,
   );
+  if (
+    modelProvider?.capabilities &&
+    generationConfig.capabilities === undefined
+  ) {
+    generationConfig.capabilities = modelProvider.capabilities;
+    sources['capabilities'] = modelProvidersSource(
+      AuthType.QWEN_OAUTH,
+      resolvedModel,
+      'capabilities',
+    );
+  }
 
   const config: ContentGeneratorConfig = {
     authType: AuthType.QWEN_OAUTH,

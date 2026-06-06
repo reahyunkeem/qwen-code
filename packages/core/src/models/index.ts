@@ -18,6 +18,12 @@ export {
 export { ModelRegistry } from './modelRegistry.js';
 
 export {
+  getConfiguredToolCallStyle,
+  isMediaTypeAllowed,
+  isVisionCapableModel,
+} from './capabilities.js';
+
+export {
   ModelsConfig,
   type ModelsConfigOptions,
   type OnModelChangeCallback,

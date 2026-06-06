@@ -17,6 +17,7 @@ import type {
 } from './types.js';
 import { buildRuntimeFetchOptions } from '../../../utils/runtimeFetchOptions.js';
 import { tokenLimit } from '../../tokenLimits.js';
+import { isVisionCapableModel } from '../../../models/capabilities.js';
 
 export class DashScopeOpenAICompatibleProvider
   implements OpenAICompatibleProvider
@@ -280,25 +281,10 @@ export class DashScopeOpenAICompatibleProvider
   }
 
   private isVisionModel(model: string | undefined): boolean {
-    if (!model) {
-      return false;
-    }
-
-    const normalized = model.toLowerCase();
-
-    if (normalized === 'vision-model') {
-      return true;
-    }
-
-    if (normalized.startsWith('qwen-vl')) {
-      return true;
-    }
-
-    if (normalized.startsWith('qwen3-vl-plus')) {
-      return true;
-    }
-
-    return false;
+    return isVisionCapableModel({
+      model,
+      capabilities: this.contentGeneratorConfig.capabilities,
+    });
   }
 
   /**
