@@ -47,6 +47,7 @@ describe('ContentGenerationPipeline', () => {
     // Mock converter
     mockConverter = {
       setModel: vi.fn(),
+      setCapabilities: vi.fn(),
       convertGeminiRequestToOpenAI: vi.fn(),
       convertOpenAIResponseToGemini: vi.fn(),
       convertOpenAIChunkToGemini: vi.fn(),
@@ -103,6 +104,7 @@ describe('ContentGenerationPipeline', () => {
       // Converter is constructed once and the model is updated per-request via setModel().
       expect(OpenAIContentConverter).toHaveBeenCalledWith(
         'test-model',
+        undefined,
         undefined,
       );
     });
